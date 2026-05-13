@@ -1,0 +1,3091 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>中华民族文化智慧学习平台</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@300;400;500;600;700;900&family=Ma+Shan+Zheng&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cream: #FEF6EC;
+  --cream-card: #FFFAF3;
+  --red: #C8291F;
+  --red-deep: #9E1F16;
+  --red-light: #FBE9E8;
+  --red-mid: #E8453A;
+  --gold: #C9880A;
+  --gold-bright: #E8A820;
+  --gold-light: #FDF0CE;
+  --gold-pale: #FBF4DF;
+  --ink: #2D1810;
+  --ink-mid: #6B4040;
+  --ink-light: #A07060;
+  --jade: #217A62;
+  --jade-light: #E3F4EF;
+  --shadow-sm: 0 2px 12px rgba(100,40,20,0.10);
+  --shadow-md: 0 6px 24px rgba(100,40,20,0.14);
+  --shadow-lg: 0 12px 48px rgba(100,40,20,0.18);
+  --border: rgba(201,136,10,0.22);
+  --border-hover: rgba(201,136,10,0.5);
+  --radius: 14px;
+  --radius-sm: 8px;
+}
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Noto Serif SC', serif;
+  background: var(--cream);
+  color: var(--ink);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ========== SCROLLBAR ========== */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--cream); }
+::-webkit-scrollbar-thumb { background: var(--border-hover); border-radius: 3px; }
+
+/* ========== BACKGROUND TEXTURE ========== */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background-image:
+    radial-gradient(circle at 15% 85%, rgba(200,41,31,0.06) 0%, transparent 40%),
+    radial-gradient(circle at 85% 15%, rgba(201,136,10,0.07) 0%, transparent 40%),
+    radial-gradient(circle at 50% 50%, rgba(254,246,236,0) 0%, rgba(254,246,236,0.3) 100%);
+  pointer-events: none;
+}
+
+/* ========== PAGES ========== */
+#app { position: relative; z-index: 1; min-height: 100vh; }
+.page { display: none; min-height: 100vh; animation: pageIn 0.45s ease; }
+.page.active { display: block; }
+@keyframes pageIn {
+  from { opacity:0; transform:translateY(16px); }
+  to { opacity:1; transform:translateY(0); }
+}
+
+/* ========== TOP NAVBAR ========== */
+.topnav {
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  background: rgba(200,41,31,0.97);
+  backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+  height: 60px;
+  box-shadow: 0 2px 20px rgba(180,30,20,0.35);
+}
+.topnav-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  text-decoration: none;
+}
+.topnav-logo-icon {
+  width: 36px; height: 36px;
+}
+.topnav-logo-text {
+  font-family: 'Ma Shan Zheng', cursive;
+  font-size: 1rem;
+  color: #FDF0CE;
+  letter-spacing: 2px;
+  line-height: 1.2;
+}
+.topnav-links {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.topnav-link {
+  padding: 6px 18px;
+  color: rgba(253,240,206,0.78);
+  font-size: 0.9rem;
+  letter-spacing: 2px;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.25s;
+  border: 1px solid transparent;
+  font-family: 'Noto Serif SC', serif;
+  background: none;
+}
+.topnav-link:hover { color: #FDF0CE; background: rgba(255,255,255,0.12); }
+.topnav-link.active { color: var(--gold-bright); border-color: rgba(232,168,32,0.4); background: rgba(255,255,255,0.1); }
+.topnav-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.topnav-user {
+  font-size: 0.82rem;
+  color: rgba(253,240,206,0.8);
+  letter-spacing: 1px;
+  padding: 5px 14px;
+  border: 1px solid rgba(253,240,206,0.25);
+  border-radius: 20px;
+}
+.music-btn {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(253,240,206,0.3);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  transition: all 0.25s;
+  position: relative;
+}
+.music-btn:hover { background: rgba(255,255,255,0.25); }
+.music-btn.playing { animation: musicRotate 3s linear infinite; }
+@keyframes musicRotate { to { transform: rotate(360deg); } }
+.music-label-bar {
+  font-size: 0.72rem;
+  color: rgba(253,240,206,0.7);
+  letter-spacing: 1px;
+  max-width: 80px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+/* music waves */
+.music-waves { display:flex; align-items:center; gap:2px; height:14px; }
+.music-wave { width:2px; border-radius:2px; background:rgba(253,240,206,0.8); animation: waveAnim 0.8s ease-in-out infinite alternate; }
+.music-wave:nth-child(2) { animation-delay:0.15s; }
+.music-wave:nth-child(3) { animation-delay:0.3s; }
+.music-wave:nth-child(4) { animation-delay:0.45s; }
+@keyframes waveAnim { from { height:4px; } to { height:14px; } }
+.music-bar-wrap.paused .music-wave { animation-play-state: paused; height:6px; }
+
+/* ========== BUTTONS ========== */
+.btn {
+  font-family: 'Noto Serif SC', serif;
+  cursor: pointer;
+  border: none;
+  border-radius: 8px;
+  transition: all 0.28s ease;
+  letter-spacing: 2px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-weight: 600;
+  position: relative;
+  overflow: hidden;
+}
+.btn::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(rgba(255,255,255,0.15), transparent);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.btn:hover::after { opacity: 1; }
+.btn-red {
+  background: linear-gradient(135deg, var(--red), var(--red-deep));
+  color: #FDF0CE;
+  padding: 12px 32px;
+  font-size: 0.95rem;
+  box-shadow: 0 4px 16px rgba(200,41,31,0.35);
+}
+.btn-red:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(200,41,31,0.45); }
+.btn-red:active { transform: translateY(0); }
+.btn-gold {
+  background: linear-gradient(135deg, var(--gold-bright), var(--gold));
+  color: var(--ink);
+  padding: 12px 32px;
+  font-size: 0.95rem;
+  box-shadow: 0 4px 16px rgba(201,136,10,0.3);
+}
+.btn-gold:hover { transform: translateY(-2px); }
+.btn-outline {
+  background: transparent;
+  color: var(--red);
+  border: 1.5px solid var(--red);
+  padding: 11px 28px;
+  font-size: 0.9rem;
+}
+.btn-outline:hover { background: var(--red-light); }
+.btn-ghost-cream {
+  background: rgba(255,255,255,0.6);
+  color: var(--ink-mid);
+  border: 1px solid var(--border);
+  padding: 9px 20px;
+  font-size: 0.85rem;
+  border-radius: 6px;
+}
+.btn-ghost-cream:hover { background: #fff; border-color: var(--border-hover); }
+.btn-sm { padding: 7px 18px !important; font-size: 0.82rem !important; letter-spacing:1px; }
+.btn-lg { padding: 15px 48px !important; font-size: 1.05rem !important; letter-spacing:3px; }
+.btn-full { width: 100%; }
+
+/* ========== CARDS ========== */
+.card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: hidden;
+}
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold-bright), transparent);
+  opacity: 0.5;
+}
+
+/* ========== ORNAMENT ========== */
+.ornament {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: center;
+}
+.ornament-line {
+  height: 1px;
+  width: 60px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+}
+.ornament-diamond {
+  width: 6px; height: 6px;
+  background: var(--gold-bright);
+  transform: rotate(45deg);
+}
+
+/* ========== HOME PAGE ========== */
+#page-home {
+  background: var(--cream);
+}
+.home-navbar {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 40px;
+  background: linear-gradient(to bottom, rgba(200,41,31,0.8), transparent);
+}
+.home-hero {
+  position: relative;
+  min-height: 520px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.hero-scene {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.hero-content {
+  position: relative;
+  z-index: 5;
+  text-align: center;
+  padding: 100px 40px 60px;
+}
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 18px;
+  border: 1px solid rgba(253,240,206,0.4);
+  border-radius: 20px;
+  background: rgba(200,41,31,0.4);
+  backdrop-filter: blur(6px);
+  font-size: 0.78rem;
+  color: rgba(253,240,206,0.85);
+  letter-spacing: 2px;
+  margin-bottom: 20px;
+}
+.hero-title {
+  font-family: 'Ma Shan Zheng', cursive;
+  font-size: clamp(2.2rem, 7vw, 5rem);
+  color: #FDF0CE;
+  text-shadow: 2px 3px 0 rgba(158,31,22,0.6), 0 0 40px rgba(232,168,32,0.4);
+  letter-spacing: 8px;
+  line-height: 1.15;
+  margin-bottom: 16px;
+}
+.hero-sub {
+  font-family: 'ZCOOL XiaoWei', serif;
+  font-size: 1rem;
+  color: rgba(253,240,206,0.75);
+  letter-spacing: 4px;
+  margin-bottom: 32px;
+}
+.hero-sep {
+  color: rgba(253,240,206,0.3);
+  padding: 0 8px;
+}
+.hero-btns {
+  display: flex;
+  gap: 14px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* ========== HOME FEATURE CARDS ========== */
+.home-features {
+  padding: 0 40px 60px;
+  max-width: 1100px;
+  margin: -60px auto 0;
+  position: relative;
+  z-index: 10;
+}
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+.feature-card {
+  background: #fff;
+  border-radius: var(--radius);
+  padding: 28px 20px;
+  text-align: center;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-md);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+.feature-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--border-hover);
+}
+.feature-icon-wrap {
+  width: 68px; height: 68px;
+  border-radius: 50%;
+  margin: 0 auto 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--red-light);
+  font-size: 2rem;
+}
+.feature-card-title {
+  font-family: 'ZCOOL XiaoWei', serif;
+  font-size: 1.1rem;
+  color: var(--ink);
+  letter-spacing: 3px;
+  margin-bottom: 6px;
+}
+.feature-card-desc {
+  font-size: 0.78rem;
+  color: var(--ink-light);
+  letter-spacing: 1px;
+  line-height: 1.6;
+  margin-bottom: 16px;
+}
+.feature-card .btn { font-size: 0.78rem !important; letter-spacing: 2px; padding: 8px 20px !important; }
+
+/* ========== AUTH PAGE ========== */
+#page-auth {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: var(--cream);
+  padding: 40px 20px;
+}
+.auth-logo {
+  text-align: center;
+  margin-bottom: 32px;
+  cursor: pointer;
+}
+.auth-logo-text {
+  font-family: 'Ma Shan Zheng', cursive;
+  font-size: 1.5rem;
+  color: var(--red);
+  letter-spacing: 4px;
+}
+.auth-box {
+  width: 100%;
+  max-width: 420px;
+  background: #fff;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+}
+.auth-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+}
+.auth-tab {
+  flex: 1;
+  padding: 16px;
+  background: none;
+  border: none;
+  font-family: 'Noto Serif SC', serif;
+  font-size: 0.95rem;
+  letter-spacing: 3px;
+  cursor: pointer;
+  color: var(--ink-light);
+  transition: all 0.25s;
+  border-bottom: 2.5px solid transparent;
+  margin-bottom: -1px;
+}
+.auth-tab.active {
+  color: var(--red);
+  border-bottom-color: var(--red);
+  background: var(--red-light);
+  font-weight: 600;
+}
+.auth-body {
+  padding: 36px;
+}
+.auth-title {
+  font-family: 'Ma Shan Zheng', cursive;
+  font-size: 1.5rem;
+  color: var(--red);
+  text-align: center;
+  letter-spacing: 4px;
+  margin-bottom: 6px;
+}
+.auth-sub {
+  text-align: center;
+  font-size: 0.78rem;
+  color: var(--ink-light);
+  letter-spacing: 2px;
+  margin-bottom: 24px;
+}
+.form-group { margin-bottom: 18px; }
+.form-label {
+  display: block;
+  font-size: 0.82rem;
+  color: var(--ink-mid);
+  letter-spacing: 2px;
+  margin-bottom: 6px;
+}
+.form-input {
+  width: 100%;
+  padding: 11px 16px;
+  background: var(--cream);
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  color: var(--ink);
+  font-family: 'Noto Serif SC', serif;
+  font-size: 0.95rem;
+  transition: all 0.25s;
+  outline: none;
+}
+.form-input:focus {
+  border-color: var(--red);
+  background: #fff;
+  box-shadow: 0 0 0 3px rgba(200,41,31,0.08);
+}
+.err-box {
+  background: rgba(200,41,31,0.07);
+  border: 1px solid rgba(200,41,31,0.25);
+  color: var(--red);
+  padding: 10px 14px;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  letter-spacing: 1px;
+  margin-bottom: 14px;
+  display: none;
+}
+.auth-switch {
+  text-align: center;
+  margin-top: 16px;
+  font-size: 0.82rem;
+  color: var(--ink-light);
+  letter-spacing: 1px;
+}
+.auth-switch .link {
+  color: var(--red);
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+/* ========== MAIN APP ========== */
+#page-main {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+.main-content {
+  flex: 1;
+  max-width: 1100px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 32px 24px 60px;
+}
+
+/* ========== LEARN TAB ========== */
+.section-header {
+  text-align: center;
+  margin-bottom: 36px;
+}
+.section-title {
+  font-family: 'Ma Shan Zheng', cursive;
+  font-size: 2rem;
+  color: var(--red);
+  letter-spacing: 6px;
+  margin-bottom: 6px;
+}
+.section-sub {
+  font-size: 0.82rem;
+  color: var(--ink-light);
+  letter-spacing: 2px;
+}
+.learn-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 22px;
+}
+.learn-card {
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 0;
+  overflow: hidden;
+}
+.learn-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-lg);
+  border-color: var(--border-hover);
+}
+.learn-card-top {
+  height: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+.learn-card-body {
+  padding: 18px 20px 22px;
+}
+.learn-card-tag {
+  display: inline-block;
+  padding: 3px 12px;
+  background: var(--red-light);
+  border: 1px solid rgba(200,41,31,0.2);
+  border-radius: 20px;
+  font-size: 0.72rem;
+  color: var(--red);
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+.learn-card-title {
+  font-family: 'ZCOOL XiaoWei', serif;
+  font-size: 1.15rem;
+  color: var(--ink);
+  letter-spacing: 3px;
+  margin-bottom: 8px;
+}
+.learn-card-desc {
+  font-size: 0.82rem;
+  color: var(--ink-light);
+  line-height: 1.7;
+  letter-spacing: 0.5px;
+}
+.read-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 10px;
+  font-size: 0.72rem;
+  color: var(--jade);
+  letter-spacing: 1px;
+}
+
+/* Detail View */
+.detail-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--red);
+  cursor: pointer;
+  font-size: 0.88rem;
+  letter-spacing: 1px;
+  margin-bottom: 20px;
+  transition: all 0.2s;
+}
+.detail-back-btn:hover { gap: 10px; }
+.detail-card {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 40px;
+}
+.detail-card h3 {
+  font-family: 'ZCOOL XiaoWei', serif;
+  font-size: 1.1rem;
+  color: var(--red);
+  letter-spacing: 3px;
+  margin: 24px 0 10px;
+  padding-left: 12px;
+  border-left: 3px solid var(--gold-bright);
+}
+.detail-card h3:first-child { margin-top: 0; }
+.detail-card p {
+  font-size: 0.9rem;
+  line-height: 1.9;
+  color: var(--ink-mid);
+  margin-bottom: 12px;
+}
+.detail-imgs {
+  display: flex;
+  gap: 12px;
+  margin: 20px 0;
+  flex-wrap: wrap;
+}
+.detail-img-box {
+  flex: 1;
+  min-width: 100px;
+  height: 90px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--gold-pale);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+}
+
+/* ========== QUIZ TAB ========== */
+.quiz-layout {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+}
+.quiz-sidebar {
+  width: 180px;
+  flex-shrink: 0;
+  background: #fff;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  position: sticky;
+  top: 90px;
+}
+.quiz-sidebar-logo {
+  padding: 16px;
+  background: var(--red);
+  text-align: center;
+}
+.quiz-sidebar-logo-text {
+  font-family: 'Ma Shan Zheng', cursive;
+  font-size: 0.85rem;
+  color: #FDF0CE;
+  letter-spacing: 2px;
+  line-height: 1.4;
+}
+.quiz-sidebar-nav {
+  padding: 8px 0;
+}
+.quiz-cat-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 11px 16px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: 'Noto Serif SC', serif;
+  font-size: 0.82rem;
+  color: var(--ink-mid);
+  letter-spacing: 1px;
+  transition: all 0.2s;
+  text-align: left;
+  border-left: 3px solid transparent;
+}
+.quiz-cat-btn:hover { background: var(--red-light); color: var(--red); }
+.quiz-cat-btn.active { background: var(--red-light); color: var(--red); border-left-color: var(--red); font-weight: 600; }
+.quiz-cat-btn.exit { color: var(--ink-light); margin-top: 8px; border-top: 1px solid var(--border); }
+.quiz-cat-btn.exit:hover { background: #FFF0F0; color: var(--red); }
+.quiz-cat-icon {
+  width: 22px; height: 22px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px;
+}
+.quiz-main-area { flex: 1; min-width: 0; }
+
+/* Quiz Start */
+.quiz-start-card {
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 48px 40px;
+  text-align: center;
+}
+.quiz-start-title {
+  font-family: 'Ma Shan Zheng', cursive;
+  font-size: 2rem;
+  color: var(--red);
+  letter-spacing: 6px;
+  margin-bottom: 8px;
+}
+.quiz-start-info {
+  font-size: 0.88rem;
+  color: var(--ink-light);
+  line-height: 1.9;
+  letter-spacing: 1px;
+  margin-bottom: 28px;
+}
+.quiz-start-info strong { color: var(--red); font-weight: 700; }
+.diff-row {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 28px;
+}
+.diff-btn {
+  padding: 8px 24px;
+  border: 1.5px solid var(--border);
+  border-radius: 20px;
+  background: var(--cream);
+  color: var(--ink-mid);
+  font-family: 'Noto Serif SC', serif;
+  font-size: 0.85rem;
+  letter-spacing: 2px;
+  cursor: pointer;
+  transition: all 0.25s;
+}
+.diff-btn:hover { border-color: var(--border-hover); }
+.diff-btn.selected {
+  background: var(--jade);
+  color: #fff;
+  border-color: var(--jade);
+  box-shadow: 0 4px 12px rgba(33,122,98,0.3);
+}
+
+/* Quiz Active */
+.quiz-active-wrap { display: none; }
+.quiz-hud {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  background: #fff;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  margin-bottom: 16px;
+  box-shadow: var(--shadow-sm);
+}
+.hud-timer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  color: var(--ink-mid);
+  letter-spacing: 1px;
+}
+.hud-timer-val {
+  font-family: 'Ma Shan Zheng', cursive;
+  font-size: 1.6rem;
+  color: var(--red);
+  min-width: 36px;
+}
+.hud-timer-val.urgent { color: #E82020; animation: timerUrgent 0.5s ease infinite; }
+@keyframes timerUrgent { 0%,100%{opacity:1;} 50%{opacity:0.4;} }
+.hud-score {
+  font-family: 'Ma Shan Zheng', cursive;
+  font-size: 1.3rem;
+  color: var(--gold);
+}
+.hud-score-label { font-size: 0.82rem; color: var(--ink-light); letter-spacing: 1px; }
+.quiz-progress-bar-wrap {
+  height: 5px;
+  background: rgba(200,41,31,0.1);
+  border-radius: 3px;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+.quiz-progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--red), var(--gold-bright));
+  border-radius: 3px;
+  transition: width 0.5s ease;
+}
+.question-card-body {
+  padding: 32px;
+}
+.q-num-tag {
+  display: inline-block;
+  font-size: 0.72rem;
+  color: var(--ink-light);
+  letter-spacing: 3px;
+  margin-bottom: 10px;
+}
+.q-text {
+  font-size: 1.1rem;
+  line-height: 1.7;
+  color: var(--ink);
+  margin-bottom: 26px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+.options-list { display: flex; flex-direction: column; gap: 12px; }
+.opt-btn {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 18px;
+  background: var(--cream);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  cursor: pointer;
+  font-family: 'Noto Serif SC', serif;
+  font-size: 0.92rem;
+  color: var(--ink-mid);
+  letter-spacing: 0.5px;
+  transition: all 0.25s;
+  text-align: left;
+}
+.opt-btn:not([disabled]):hover {
+  background: var(--gold-pale);
+  border-color: var(--border-hover);
+  color: var(--ink);
+  transform: translateX(4px);
+}
+.opt-letter {
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  background: #fff;
+  border: 1.5px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.82rem;
+  color: var(--ink-mid);
+  flex-shrink: 0;
+  font-weight: 600;
+  transition: all 0.25s;
+}
+.opt-btn.correct {
+  background: rgba(33,122,98,0.1);
+  border-color: var(--jade);
+  color: var(--jade);
+}
+.opt-btn.correct .opt-letter { background: var(--jade); border-color: var(--jade); color: #fff; }
+.opt-btn.wrong {
+  background: rgba(200,41,31,0.08);
+  border-color: var(--red);
+  color: var(--red);
+}
+.opt-btn.wrong .opt-letter { background: var(--red); border-color: var(--red); color: #fff; }
+.explanation-wrap {
+  display: none;
+  margin-top: 16px;
+  padding: 18px 22px;
+  background: var(--jade-light);
+  border: 1px solid rgba(33,122,98,0.25);
+  border-left: 3px solid var(--jade);
+  border-radius: 10px;
+  animation: slideDown 0.3s ease;
+}
+.explanation-wrap.show { display: block; }
+@keyframes slideDown { from{opacity:0;transform:translateY(-8px);} to{opacity:1;transform:translateY(0);} }
+.expl-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--jade);
+  font-size: 0.88rem;
+  letter-spacing: 2px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.expl-text {
+  font-size: 0.88rem;
+  color: var(--ink-mid);
+  line-height: 1.8;
+  letter-spacing: 0.5px;
+}
+.quiz-next-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 16px;
+}
+
+/* Quiz Result */
+.result-wrap { display: none; max-width: 560px; margin: 0 auto; text-align: center; }
+.result-trophy {
+  width: 120px; height: 120px;
+  border-radius: 50%;
+  margin: 0 auto 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 4rem;
+  border: 3px solid var(--gold-bright);
+  background: var(--gold-pale);
+  box-shadow: 0 0 0 6px rgba(232,168,32,0.12), var(--shadow-md);
+  animation: trophyPulse 2s ease-in-out infinite;
+}
+@keyframes trophyPulse {
+  0%,100%{ box-shadow:0 0 0 6px rgba(232,168,32,0.12),var(--shadow-md); }
+  50%{ box-shadow:0 0 0 14px rgba(232,168,32,0.07),var(--shadow-md); }
+}
+.result-score-num {
+  font-family: 'Ma Shan Zheng', cursive;
+  font-size: 4.5rem;
+  color: var(--red);
+  line-height: 1;
+}
+.result-score-unit { font-size: 1.1rem; color: var(--ink-light); letter-spacing: 2px; }
+.result-stars {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin: 12px 0;
+  font-size: 1.8rem;
+}
+.result-grade {
+  font-family: 'Ma Shan Zheng', cursive;
+  font-size: 1.6rem;
+  color: var(--ink);
+  letter-spacing: 4px;
+  margin-bottom: 6px;
+}
+.result-msg {
+  font-size: 0.88rem;
+  color: var(--ink-light);
+  letter-spacing: 1px;
+  line-height: 1.7;
+  margin-bottom: 24px;
+}
+.result-stats-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-bottom: 28px;
+}
+.r-stat {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px 8px;
+}
+.r-stat-val {
+  font-family: 'Ma Shan Zheng', cursive;
+  font-size: 1.8rem;
+  color: var(--red);
+  display: block;
+}
+.r-stat-label { font-size: 0.72rem; color: var(--ink-light); letter-spacing: 1px; }
+.result-knowledge-box {
+  background: var(--gold-pale);
+  border: 1px solid rgba(201,136,10,0.25);
+  border-radius: 10px;
+  padding: 18px 22px;
+  margin-bottom: 24px;
+  text-align: left;
+}
+.rk-title {
+  font-size: 0.85rem;
+  color: var(--gold);
+  letter-spacing: 2px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.rk-text { font-size: 0.85rem; color: var(--ink-mid); line-height: 1.8; }
+.result-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+/* ========== LEADERBOARD ========== */
+.board-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+.board-tabs {
+  display: flex;
+  gap: 4px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 30px;
+  padding: 4px;
+}
+.board-tab {
+  padding: 7px 20px;
+  border-radius: 24px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-family: 'Noto Serif SC', serif;
+  font-size: 0.82rem;
+  letter-spacing: 1px;
+  color: var(--ink-mid);
+  transition: all 0.25s;
+}
+.board-tab.active {
+  background: linear-gradient(135deg, var(--red), var(--red-deep));
+  color: #fff;
+  box-shadow: 0 3px 10px rgba(200,41,31,0.3);
+}
+.board-personal {
+  background: linear-gradient(135deg, rgba(200,41,31,0.07), rgba(201,136,10,0.06));
+  border: 1px solid rgba(201,136,10,0.2);
+  border-radius: 12px;
+  padding: 18px 22px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.bp-label { font-size: 0.82rem; color: var(--ink-light); letter-spacing: 1px; }
+.bp-name { font-size: 0.78rem; color: var(--ink-light); margin-top: 2px; }
+.bp-score {
+  font-family: 'Ma Shan Zheng', cursive;
+  font-size: 2rem;
+  color: var(--red);
+}
+.board-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.board-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 20px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  transition: all 0.25s;
+  animation: boardSlide 0.4s ease backwards;
+}
+@keyframes boardSlide { from{opacity:0;transform:translateX(-16px);} }
+.board-item:hover { border-color: var(--border-hover); box-shadow: var(--shadow-sm); }
+.board-item:nth-child(1) { border-color: rgba(255,215,0,0.5); background: rgba(255,215,0,0.04); }
+.board-item:nth-child(2) { border-color: rgba(192,192,192,0.4); }
+.board-item:nth-child(3) { border-color: rgba(205,127,50,0.4); }
+.board-rank {
+  font-family: 'Ma Shan Zheng', cursive;
+  font-size: 1.3rem;
+  min-width: 42px;
+  text-align: center;
+}
+.board-item:nth-child(1) .board-rank { color: #E5A000; }
+.board-item:nth-child(2) .board-rank { color: #999; }
+.board-item:nth-child(3) .board-rank { color: #C06030; }
+.board-name { flex: 1; font-size: 0.95rem; color: var(--ink); letter-spacing: 1px; }
+.board-score {
+  font-family: 'Ma Shan Zheng', cursive;
+  font-size: 1.3rem;
+  color: var(--red);
+}
+.board-date { font-size: 0.72rem; color: var(--ink-light); min-width: 80px; text-align: right; }
+.board-empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--ink-light);
+  font-size: 0.9rem;
+  letter-spacing: 2px;
+}
+
+/* ========== PROFILE ========== */
+.profile-wrap { max-width: 600px; margin: 0 auto; }
+.profile-top {
+  background: linear-gradient(135deg, var(--red), var(--red-deep));
+  border-radius: var(--radius);
+  padding: 36px 24px;
+  text-align: center;
+  margin-bottom: 20px;
+  position: relative;
+  overflow: hidden;
+}
+.profile-top::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: url("data:image/svg+xml,%3Csvg width='200' height='200' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='180' cy='20' r='80' fill='rgba(255,255,255,0.05)'/%3E%3Ccircle cx='20' cy='180' r='60' fill='rgba(255,255,255,0.04)'/%3E%3C/svg%3E") no-repeat center/cover;
+}
+.profile-avatar {
+  width: 82px; height: 82px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  border: 3px solid rgba(253,240,206,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Ma Shan Zheng', cursive;
+  font-size: 2.2rem;
+  color: #FDF0CE;
+  margin: 0 auto 14px;
+  position: relative;
+}
+.profile-name {
+  font-family: 'ZCOOL XiaoWei', serif;
+  font-size: 1.5rem;
+  color: #FDF0CE;
+  letter-spacing: 4px;
+  margin-bottom: 8px;
+  position: relative;
+}
+.profile-badge {
+  display: inline-block;
+  padding: 5px 18px;
+  background: rgba(253,240,206,0.18);
+  border: 1px solid rgba(253,240,206,0.35);
+  border-radius: 20px;
+  font-size: 0.82rem;
+  color: #FDF0CE;
+  letter-spacing: 2px;
+  position: relative;
+}
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.stat-card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px 8px;
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+}
+.stat-card-icon { font-size: 1.4rem; margin-bottom: 6px; }
+.stat-card-val {
+  font-family: 'Ma Shan Zheng', cursive;
+  font-size: 1.5rem;
+  color: var(--red);
+  display: block;
+}
+.stat-card-lbl { font-size: 0.7rem; color: var(--ink-light); letter-spacing: 1px; }
+.achievement-grid { display: flex; flex-wrap: wrap; gap: 10px; }
+.ach-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  padding: 14px 12px;
+  background: var(--cream);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  min-width: 86px;
+  text-align: center;
+  transition: all 0.25s;
+}
+.ach-item.earned { background: var(--gold-pale); border-color: rgba(201,136,10,0.3); }
+.ach-item:not(.earned) { opacity: 0.4; }
+.ach-emoji { font-size: 1.8rem; }
+.ach-name { font-size: 0.7rem; color: var(--gold); letter-spacing: 1px; font-weight: 600; }
+.ach-desc { font-size: 0.62rem; color: var(--ink-light); }
+
+/* ========== ABOUT PAGE TAB ========== */
+.about-wrap { max-width: 800px; margin: 0 auto; }
+.about-intro-card { padding: 40px; margin-bottom: 24px; }
+.about-intro-card h3 {
+  font-family: 'ZCOOL XiaoWei', serif;
+  font-size: 1.1rem;
+  color: var(--red);
+  letter-spacing: 3px;
+  margin-bottom: 14px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+}
+.about-intro-card p {
+  font-size: 0.9rem;
+  line-height: 1.9;
+  color: var(--ink-mid);
+  letter-spacing: 0.5px;
+}
+.features-about {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin: 20px 0;
+}
+.fa-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 20px 16px;
+  background: var(--cream);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  flex: 1;
+  min-width: 90px;
+  text-align: center;
+}
+.fa-icon {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  background: var(--red-light);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.4rem;
+}
+.fa-name { font-size: 0.78rem; color: var(--ink); letter-spacing: 1px; font-weight: 600; }
+.tech-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.tech-tag {
+  padding: 5px 16px;
+  background: var(--ink);
+  color: #FDF0CE;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  letter-spacing: 1px;
+}
+
+/* ========== ACHIEVEMENT POPUP ========== */
+.ach-popup {
+  position: fixed;
+  top: 80px; right: 20px;
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  box-shadow: var(--shadow-lg);
+  transform: translateX(140%);
+  transition: transform 0.4s ease;
+  z-index: 500;
+  max-width: 280px;
+}
+.ach-popup.show { transform: translateX(0); }
+.ach-popup-icon { font-size: 2rem; }
+.ach-popup-title { font-size: 0.82rem; color: var(--jade); letter-spacing: 1px; font-weight: 700; }
+.ach-popup-desc { font-size: 0.76rem; color: var(--ink-light); }
+
+/* ========== TOAST ========== */
+.toast-bar {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background: var(--ink);
+  color: #FDF0CE;
+  padding: 12px 28px;
+  border-radius: 30px;
+  font-size: 0.88rem;
+  letter-spacing: 1px;
+  z-index: 600;
+  transition: transform 0.35s ease;
+  white-space: nowrap;
+  box-shadow: var(--shadow-md);
+}
+.toast-bar.show { transform: translateX(-50%) translateY(0); }
+
+/* ========== CONFETTI ========== */
+.confetti-piece {
+  position: fixed;
+  width: 8px; height: 8px;
+  top: -10px;
+  animation: confettiFall linear forwards;
+  z-index: 999;
+  pointer-events: none;
+}
+@keyframes confettiFall {
+  to { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+}
+
+/* ========== DECORATIVE ELEMENTS ========== */
+.plum-corner {
+  position: absolute;
+  pointer-events: none;
+}
+
+/* ========== UTILITY ========== */
+.text-center { text-align: center; }
+.mt-1 { margin-top: 8px; }
+.mt-2 { margin-top: 16px; }
+.mt-3 { margin-top: 24px; }
+.mb-2 { margin-bottom: 16px; }
+.mb-3 { margin-bottom: 24px; }
+.flex { display: flex; }
+.gap-2 { gap: 16px; }
+.items-center { align-items: center; }
+.justify-between { justify-content: space-between; }
+.hidden { display: none !important; }
+
+/* ========== RESPONSIVE ========== */
+@media(max-width: 768px) {
+  .features-grid { grid-template-columns: repeat(2, 1fr); }
+  .home-features { padding: 0 16px 40px; margin-top: -40px; }
+  .topnav { padding: 0 16px; }
+  .topnav-links { display: none; }
+  .main-content { padding: 20px 16px 40px; }
+  .quiz-sidebar { display: none; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .learn-grid { grid-template-columns: 1fr; }
+  .detail-card { padding: 24px; }
+}
+@media(max-width: 480px) {
+  .features-grid { grid-template-columns: 1fr 1fr; }
+  .hero-title { font-size: 2rem; letter-spacing: 4px; }
+  .hero-btns { flex-direction: column; align-items: center; }
+  .result-stats-row { grid-template-columns: repeat(3, 1fr); }
+  .auth-body { padding: 24px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Toast -->
+<div class="toast-bar" id="toastBar"></div>
+
+<!-- Achievement Popup -->
+<div class="ach-popup" id="achPopup">
+  <div class="ach-popup-icon" id="achPopIcon">🏆</div>
+  <div>
+    <div class="ach-popup-title" id="achPopTitle">成就解锁！</div>
+    <div class="ach-popup-desc" id="achPopDesc"></div>
+  </div>
+</div>
+
+<!-- ===== APP ===== -->
+<div id="app">
+
+<!-- ===== HOME PAGE ===== -->
+<div class="page active" id="page-home">
+  <!-- Nav overlay on hero -->
+  <div class="home-navbar">
+    <div class="topnav-logo" onclick="void(0)">
+      <svg class="topnav-logo-icon" viewBox="0 0 36 36" fill="none">
+        <circle cx="18" cy="18" r="17" fill="rgba(253,240,206,0.15)" stroke="rgba(253,240,206,0.5)" stroke-width="1.5"/>
+        <text x="18" y="24" text-anchor="middle" font-size="18" fill="#FDF0CE" font-family="serif">华</text>
+      </svg>
+      <div class="topnav-logo-text">中华民族文化<br>智慧学习平台</div>
+    </div>
+    <div class="topnav-links">
+      <span class="topnav-link active">首页</span>
+      <span class="topnav-link" onclick="showPage('page-auth')">开始学习</span>
+      <span class="topnav-link" onclick="showPage('page-auth')">排行榜</span>
+      <span class="topnav-link" onclick="showPage('page-auth')">项目介绍</span>
+    </div>
+    <div class="music-btn" id="homeMusicBtn" onclick="toggleMusic()" title="民族音乐">🎵</div>
+  </div>
+
+  <!-- Hero -->
+  <div class="home-hero">
+    <!-- SVG Scene Background -->
+    <svg class="hero-scene" viewBox="0 0 1200 560" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#B01515"/>
+          <stop offset="35%" stop-color="#C84020"/>
+          <stop offset="70%" stop-color="#E0703A"/>
+          <stop offset="100%" stop-color="#F0D0A0"/>
+        </linearGradient>
+        <linearGradient id="mtFarGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#C06030" stop-opacity="0.5"/>
+          <stop offset="100%" stop-color="#A03020" stop-opacity="0.8"/>
+        </linearGradient>
+        <linearGradient id="mtNearGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#7A2010" stop-opacity="0.7"/>
+          <stop offset="100%" stop-color="#5A1808" stop-opacity="0.95"/>
+        </linearGradient>
+        <filter id="blur4"><feGaussianBlur stdDeviation="4"/></filter>
+        <filter id="blur2"><feGaussianBlur stdDeviation="2"/></filter>
+      </defs>
+      <!-- Sky -->
+      <rect width="1200" height="560" fill="url(#skyGrad)"/>
+      <!-- Sun/moon glow -->
+      <circle cx="600" cy="120" r="90" fill="rgba(255,200,80,0.18)" filter="url(#blur4)"/>
+      <circle cx="600" cy="120" r="50" fill="rgba(255,220,120,0.22)" filter="url(#blur2)"/>
+      <!-- Far mountains (ink wash) -->
+      <path d="M0,360 Q100,200 200,280 Q280,160 360,240 Q450,100 550,200 Q640,80 720,180 Q800,60 880,160 Q960,100 1040,200 Q1100,140 1200,220 L1200,560 L0,560 Z" fill="url(#mtFarGrad)" opacity="0.55"/>
+      <!-- Mid mountains -->
+      <path d="M0,420 Q80,300 160,360 Q240,240 320,320 Q400,200 480,300 Q560,240 640,340 Q720,200 820,320 Q900,260 980,360 Q1060,280 1140,380 L1200,420 L1200,560 L0,560 Z" fill="url(#mtNearGrad)" opacity="0.7"/>
+      <!-- Tiananmen / temple silhouette -->
+      <g opacity="0.55" transform="translate(450,280)">
+        <!-- Base platform -->
+        <rect x="0" y="120" width="300" height="28" fill="#6B1008"/>
+        <rect x="30" y="108" width="240" height="16" fill="#7A1510"/>
+        <!-- Main gate base -->
+        <rect x="60" y="60" width="180" height="52" fill="#8B1A12"/>
+        <!-- Arches -->
+        <ellipse cx="105" cy="90" rx="18" ry="22" fill="#5A1008"/>
+        <ellipse cx="150" cy="90" rx="18" ry="22" fill="#5A1008"/>
+        <ellipse cx="195" cy="90" rx="18" ry="22" fill="#5A1008"/>
+        <!-- Roof level 1 -->
+        <path d="M50,55 Q150,15 250,55 L240,65 L60,65 Z" fill="#C8401A"/>
+        <path d="M40,58 L260,58 L268,68 L32,68 Z" fill="#A83018"/>
+        <!-- Roof level 2 -->
+        <rect x="80" y="22" width="140" height="36" fill="#8B1A12"/>
+        <path d="M72,22 Q150,-8 228,22 L220,30 L80,30 Z" fill="#C8401A"/>
+        <path d="M66,24 L234,24 L240,32 L60,32 Z" fill="#A83018"/>
+        <!-- Top tower -->
+        <rect x="110" y="2" width="80" height="22" fill="#7A1510"/>
+        <path d="M105,2 Q150,-12 195,2 L190,8 L110,8 Z" fill="#C8401A"/>
+        <!-- Star -->
+        <circle cx="150" cy="-5" r="8" fill="#FFD700" opacity="0.8"/>
+        <!-- Windows/lanterns hints -->
+        <rect x="88" y="70" width="16" height="20" rx="8" fill="#D4651A"/>
+        <rect x="142" y="70" width="16" height="20" rx="8" fill="#D4651A"/>
+        <rect x="196" y="70" width="16" height="20" rx="8" fill="#D4651A"/>
+      </g>
+      <!-- Red banners/ribbons -->
+      <path d="M0,380 Q200,340 400,380 Q600,420 800,360 Q1000,300 1200,380 L1200,420 Q1000,360 800,400 Q600,440 400,400 Q200,360 0,420 Z" fill="rgba(180,20,10,0.35)"/>
+      <!-- Cranes / birds -->
+      <g fill="rgba(255,255,255,0.7)">
+        <path d="M120,160 Q130,155 140,160 Q130,150 120,160 Z"/>
+        <path d="M120,160 Q130,165 140,160"/>
+        <path d="M200,130 Q212,124 224,130 Q212,118 200,130 Z"/>
+        <path d="M200,130 Q212,136 224,130"/>
+        <path d="M970,180 Q982,174 994,180 Q982,168 970,180 Z"/>
+        <path d="M970,180 Q982,186 994,180"/>
+        <path d="M1050,140 Q1062,134 1074,140 Q1062,128 1050,140 Z"/>
+        <path d="M1050,140 Q1062,146 1074,140"/>
+        <path d="M320,100 Q332,94 344,100 Q332,88 320,100 Z"/>
+        <path d="M320,100 Q332,106 344,100"/>
+        <path d="M860,110 Q872,104 884,110 Q872,98 860,110 Z"/>
+        <path d="M860,110 Q872,116 884,110"/>
+      </g>
+      <!-- Plum blossoms left -->
+      <g opacity="0.6">
+        <line x1="0" y1="480" x2="80" y2="300" stroke="#8B2010" stroke-width="3"/>
+        <line x1="80" y1="300" x2="50" y2="180" stroke="#8B2010" stroke-width="2.5"/>
+        <line x1="80" y1="300" x2="140" y2="220" stroke="#8B2010" stroke-width="2"/>
+        <line x1="50" y1="180" x2="30" y2="120" stroke="#8B2010" stroke-width="1.5"/>
+        <line x1="50" y1="180" x2="90" y2="130" stroke="#8B2010" stroke-width="1.5"/>
+        <!-- Blossoms -->
+        <circle cx="30" cy="120" r="8" fill="#FF8090"/><circle cx="22" cy="114" r="7" fill="#FF9090"/><circle cx="38" cy="114" r="7" fill="#FF9090"/><circle cx="20" cy="126" r="7" fill="#FFB0B0"/><circle cx="40" cy="126" r="7" fill="#FFB0B0"/>
+        <circle cx="90" cy="130" r="7" fill="#FF8090"/><circle cx="83" cy="124" r="6" fill="#FF9090"/><circle cx="97" cy="124" r="6" fill="#FF9090"/>
+        <circle cx="140" cy="220" r="7" fill="#FF8090"/><circle cx="133" cy="214" r="6" fill="#FFB0B0"/><circle cx="147" cy="214" r="6" fill="#FFB0B0"/>
+      </g>
+      <!-- Plum blossoms right -->
+      <g opacity="0.6">
+        <line x1="1200" y1="500" x2="1120" y2="300" stroke="#8B2010" stroke-width="3"/>
+        <line x1="1120" y1="300" x2="1150" y2="160" stroke="#8B2010" stroke-width="2.5"/>
+        <line x1="1120" y1="300" x2="1060" y2="220" stroke="#8B2010" stroke-width="2"/>
+        <line x1="1150" y1="160" x2="1170" y2="100" stroke="#8B2010" stroke-width="1.5"/>
+        <line x1="1150" y1="160" x2="1110" y2="110" stroke="#8B2010" stroke-width="1.5"/>
+        <circle cx="1170" cy="100" r="8" fill="#FF8090"/><circle cx="1162" cy="94" r="7" fill="#FF9090"/><circle cx="1178" cy="94" r="7" fill="#FF9090"/>
+        <circle cx="1110" cy="110" r="7" fill="#FF8090"/><circle cx="1103" cy="104" r="6" fill="#FFB0B0"/><circle cx="1117" cy="104" r="6" fill="#FFB0B0"/>
+        <circle cx="1060" cy="220" r="7" fill="#FF8090"/><circle cx="1053" cy="214" r="6" fill="#FFB0B0"/><circle cx="1067" cy="214" r="6" fill="#FFB0B0"/>
+      </g>
+      <!-- Clouds -->
+      <ellipse cx="200" cy="100" rx="60" ry="20" fill="rgba(255,255,255,0.12)" filter="url(#blur2)"/>
+      <ellipse cx="1000" cy="80" rx="70" ry="22" fill="rgba(255,255,255,0.10)" filter="url(#blur2)"/>
+      <ellipse cx="600" cy="60" rx="100" ry="25" fill="rgba(255,255,255,0.08)" filter="url(#blur2)"/>
+    </svg>
+
+    <!-- Hero Text Content -->
+    <div class="hero-content">
+      <div class="hero-badge">✦ 传承中华优秀传统文化 · 铸牢中华民族共同体意识 ✦</div>
+      <h1 class="hero-title">中华民族文化<br>智慧学习平台</h1>
+      <p class="hero-sub">
+        <span>传承五十六个民族的璀璨文明</span>
+        <span class="hero-sep">·</span>
+        <span>在知识的海洋中感受博大精深</span>
+      </p>
+      <div class="hero-btns">
+        <button class="btn btn-red btn-lg" onclick="showPage('page-auth')">立即开始学习</button>
+        <button class="btn btn-ghost-cream btn-lg" onclick="showPage('page-auth','register')" style="background:rgba(255,255,255,0.2);color:#FDF0CE;border-color:rgba(253,240,206,0.4);">注册新账号</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Feature Cards -->
+  <div class="home-features">
+    <div class="features-grid">
+      <div class="feature-card" onclick="showPage('page-auth')">
+        <div class="feature-icon-wrap">
+          <svg width="38" height="38" viewBox="0 0 38 38" fill="none">
+            <rect x="6" y="4" width="22" height="28" rx="3" fill="#C8291F"/>
+            <rect x="9" y="8" width="14" height="2" rx="1" fill="#FDF0CE"/>
+            <rect x="9" y="13" width="14" height="2" rx="1" fill="#FDF0CE"/>
+            <rect x="9" y="18" width="10" height="2" rx="1" fill="#FDF0CE"/>
+            <circle cx="28" cy="28" r="7" fill="#E8A820"/>
+            <path d="M25 28 L27 30 L31 26" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="feature-card-title">开始学习</div>
+        <div class="feature-card-desc">选择分类，探索民族知识宝库</div>
+        <button class="btn btn-red">立即开始</button>
+      </div>
+      <div class="feature-card" onclick="showPage('page-auth')">
+        <div class="feature-icon-wrap">
+          <svg width="38" height="38" viewBox="0 0 38 38" fill="none">
+            <path d="M19 4 L22 14 L33 14 L24 21 L27 32 L19 25 L11 32 L14 21 L5 14 L16 14 Z" fill="#C8291F"/>
+            <circle cx="30" cy="26" r="5" fill="#E8A820"/>
+            <rect x="28" y="22" width="4" height="8" rx="1" fill="white" opacity="0.8"/>
+            <rect x="26" y="25" width="8" height="4" rx="1" fill="white" opacity="0.8"/>
+          </svg>
+        </div>
+        <div class="feature-card-title">排行榜</div>
+        <div class="feature-card-desc">查看学习排行，激励自我提升</div>
+        <button class="btn btn-red">查看排行</button>
+      </div>
+      <div class="feature-card" onclick="showPage('page-auth')">
+        <div class="feature-icon-wrap">
+          <svg width="38" height="38" viewBox="0 0 38 38" fill="none">
+            <rect x="8" y="8" width="22" height="24" rx="3" fill="#C8291F"/>
+            <path d="M14 16 Q19 10 24 16" stroke="#FDF0CE" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="19" cy="20" r="4" fill="#E8A820"/>
+            <rect x="15" y="26" width="8" height="2" rx="1" fill="#FDF0CE"/>
+          </svg>
+        </div>
+        <div class="feature-card-title">项目介绍</div>
+        <div class="feature-card-desc">了解平台背景与核心功能</div>
+        <button class="btn btn-red">了解更多</button>
+      </div>
+      <div class="feature-card" onclick="showPage('page-auth')">
+        <div class="feature-icon-wrap">
+          <svg width="38" height="38" viewBox="0 0 38 38" fill="none">
+            <circle cx="15" cy="14" r="7" fill="#C8291F"/>
+            <circle cx="24" cy="16" r="6" fill="#9E1F16"/>
+            <path d="M5 30 Q15 24 26 28 Q32 30 34 34" stroke="#C8291F" stroke-width="3" stroke-linecap="round" fill="none"/>
+          </svg>
+        </div>
+        <div class="feature-card-title">关于我们</div>
+        <div class="feature-card-desc">团队介绍与联系方式</div>
+        <button class="btn btn-red">联系我们</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div style="text-align:center;padding:20px;font-size:0.75rem;color:var(--ink-light);letter-spacing:2px;">
+    版本 2.0 · 题库 30 道 · 56个民族文化 · 探索无止境
+  </div>
+</div>
+
+<!-- ===== AUTH PAGE ===== -->
+<div class="page" id="page-auth">
+  <div class="auth-logo" onclick="showPage('page-home')">
+    <svg width="48" height="48" viewBox="0 0 48 48" style="margin-bottom:8px;">
+      <circle cx="24" cy="24" r="23" fill="#C8291F" stroke="rgba(232,168,32,0.4)" stroke-width="2"/>
+      <text x="24" y="32" text-anchor="middle" font-size="24" fill="#FDF0CE" font-family="serif">华</text>
+    </svg>
+    <div class="auth-logo-text">中华民族文化智慧学习平台</div>
+  </div>
+  <div class="auth-box">
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="authTabLogin" onclick="switchAuthTab('login')">登 录</button>
+      <button class="auth-tab" id="authTabReg" onclick="switchAuthTab('register')">注 册</button>
+    </div>
+    <div class="auth-body">
+      <div class="err-box" id="errBox"></div>
+      <!-- Login form -->
+      <div id="formLogin">
+        <div class="auth-title">欢迎回来</div>
+        <div class="auth-sub">登录以继续您的文化学习之旅</div>
+        <div class="form-group">
+          <label class="form-label">用户名</label>
+          <input class="form-input" id="loginUser" type="text" placeholder="请输入用户名">
+        </div>
+        <div class="form-group">
+          <label class="form-label">密码</label>
+          <input class="form-input" id="loginPass" type="password" placeholder="请输入密码" onkeydown="if(event.key==='Enter')doLogin()">
+        </div>
+        <button class="btn btn-red btn-full mt-2" onclick="doLogin()">登 录</button>
+        <div class="auth-switch mt-1">没有账号？<span class="link" onclick="switchAuthTab('register')">立即注册</span></div>
+      </div>
+      <!-- Register form -->
+      <div id="formReg" style="display:none;">
+        <div class="auth-title">创建账号</div>
+        <div class="auth-sub">加入中华文化学习社区</div>
+        <div class="form-group">
+          <label class="form-label">用户名（2-10个字符）</label>
+          <input class="form-input" id="regUser" type="text" placeholder="请输入用户名">
+        </div>
+        <div class="form-group">
+          <label class="form-label">密码（至少6位）</label>
+          <input class="form-input" id="regPass" type="password" placeholder="请输入密码">
+        </div>
+        <div class="form-group">
+          <label class="form-label">确认密码</label>
+          <input class="form-input" id="regPass2" type="password" placeholder="再次输入密码">
+        </div>
+        <button class="btn btn-gold btn-full mt-2" onclick="doRegister()">注 册</button>
+        <div class="auth-switch mt-1">已有账号？<span class="link" onclick="switchAuthTab('login')">立即登录</span></div>
+      </div>
+    </div>
+  </div>
+  <div style="margin-top:16px;text-align:center;">
+    <span class="auth-switch"><span class="link" onclick="showPage('page-home')">← 返回首页</span></span>
+  </div>
+</div>
+
+<!-- ===== MAIN APP PAGE ===== -->
+<div class="page" id="page-main">
+  <!-- Top Navigation -->
+  <nav class="topnav">
+    <div class="topnav-logo" onclick="switchMainTab('learn')">
+      <svg class="topnav-logo-icon" viewBox="0 0 36 36" fill="none">
+        <circle cx="18" cy="18" r="17" fill="rgba(253,240,206,0.18)" stroke="rgba(253,240,206,0.45)" stroke-width="1.5"/>
+        <text x="18" y="24" text-anchor="middle" font-size="18" fill="#FDF0CE" font-family="serif">华</text>
+      </svg>
+      <div class="topnav-logo-text">中华民族文化<br>智慧学习平台</div>
+    </div>
+    <div class="topnav-links">
+      <button class="topnav-link active" id="navLearn" onclick="switchMainTab('learn')">民族知识</button>
+      <button class="topnav-link" id="navQuiz" onclick="switchMainTab('quiz')">知识答题</button>
+      <button class="topnav-link" id="navBoard" onclick="switchMainTab('board')">排行榜</button>
+      <button class="topnav-link" id="navProfile" onclick="switchMainTab('profile')">我的主页</button>
+      <button class="topnav-link" id="navAbout" onclick="switchMainTab('about')">项目介绍</button>
+    </div>
+    <div class="topnav-right">
+      <div class="topnav-user" id="topUser">🌸 用户</div>
+      <div id="userLevelBadge" style="font-size:0.72rem;color:rgba(253,240,206,0.7);letter-spacing:1px;padding:4px 12px;border:1px solid rgba(253,240,206,0.2);border-radius:20px;"></div>
+      <div class="music-bar-wrap paused" id="musicBarWrap" style="display:flex;align-items:center;gap:6px;cursor:pointer;" onclick="toggleMusic()">
+        <div class="music-waves">
+          <div class="music-wave"></div><div class="music-wave"></div>
+          <div class="music-wave"></div><div class="music-wave"></div>
+        </div>
+        <span class="music-label-bar" id="musicLabel">民族音乐</span>
+      </div>
+      <button class="btn btn-ghost-cream btn-sm" onclick="doLogout()" style="color:rgba(253,240,206,0.8);border-color:rgba(253,240,206,0.3);background:rgba(255,255,255,0.1);">退出</button>
+    </div>
+  </nav>
+
+  <div class="main-content">
+
+    <!-- ===== LEARN TAB ===== -->
+    <div id="tabLearn">
+      <!-- List view -->
+      <div id="learnListView">
+        <div class="section-header">
+          <div class="ornament mb-2">
+            <div class="ornament-line"></div>
+            <div class="ornament-diamond"></div>
+            <div class="ornament-line"></div>
+          </div>
+          <div class="section-title">民族文化知识库</div>
+          <div class="section-sub">探索五十六个民族的璀璨文明 · 领略中华文化之博大精深</div>
+        </div>
+        <div class="learn-grid" id="learnGrid"></div>
+      </div>
+      <!-- Detail view -->
+      <div id="learnDetailView" style="display:none;">
+        <div class="detail-back-btn" onclick="closeDetail()">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3 L5 8 L10 13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          返回知识库
+        </div>
+        <div class="card detail-card" id="detailBody"></div>
+      </div>
+    </div>
+
+    <!-- ===== QUIZ TAB ===== -->
+    <div id="tabQuiz" style="display:none;">
+      <div class="quiz-layout">
+        <!-- Sidebar -->
+        <div class="quiz-sidebar">
+          <div class="quiz-sidebar-logo">
+            <div class="quiz-sidebar-logo-text">中华民族文化<br>智慧学习平台</div>
+          </div>
+          <div class="quiz-sidebar-nav">
+            <button class="quiz-cat-btn active" id="catAnswering" onclick="sidebarCat('answering')">
+              <div class="quiz-cat-icon">
+                <svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M5 8 L7 10 L11 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </div>答题中
+            </button>
+            <button class="quiz-cat-btn" id="catHistory" onclick="sidebarCat('history')">
+              <div class="quiz-cat-icon">🏛️</div>历史文化
+            </button>
+            <button class="quiz-cat-btn" id="catEthnic" onclick="sidebarCat('ethnic')">
+              <div class="quiz-cat-icon">👘</div>民族文化
+            </button>
+            <button class="quiz-cat-btn" id="catFestival" onclick="sidebarCat('festival')">
+              <div class="quiz-cat-icon">🎉</div>传统节日
+            </button>
+            <button class="quiz-cat-btn" id="catHeritage" onclick="sidebarCat('heritage')">
+              <div class="quiz-cat-icon">📜</div>非遗文化
+            </button>
+            <button class="quiz-cat-btn" id="catPoetry" onclick="sidebarCat('poetry')">
+              <div class="quiz-cat-icon">📖</div>诗词文化
+            </button>
+            <button class="quiz-cat-btn exit" onclick="switchMainTab('learn')">
+              <div class="quiz-cat-icon">
+                <svg width="14" height="14" viewBox="0 0 14 14"><path d="M9 2 L5 7 L9 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="5" y1="7" x2="13" y2="7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </div>退出答题
+            </button>
+          </div>
+        </div>
+
+        <!-- Main quiz area -->
+        <div class="quiz-main-area">
+          <!-- Start screen -->
+          <div id="quizStartScreen">
+            <div class="card quiz-start-card">
+              <div style="font-size:3rem;margin-bottom:16px;">📝</div>
+              <div class="quiz-start-title">知识答题</div>
+              <div class="ornament mb-3">
+                <div class="ornament-line"></div>
+                <div class="ornament-diamond"></div>
+                <div class="ornament-line"></div>
+              </div>
+              <p class="quiz-start-info">
+                每次从题库 <strong>30 道题</strong>中随机抽取 <strong>10 道题</strong><br>
+                每题 10 分，满分 100 分<br>
+                答错后自动解析民族文化背景<br>
+                每题限时 <strong>30 秒</strong>，超时自动下一题
+              </p>
+              <p style="font-size:0.82rem;color:var(--ink-light);letter-spacing:2px;margin-bottom:12px;">选择难度</p>
+              <div class="diff-row">
+                <button class="diff-btn selected" id="diffEasy" onclick="selectDiff('easy')">入门</button>
+                <button class="diff-btn" id="diffMedium" onclick="selectDiff('medium')">进阶</button>
+                <button class="diff-btn" id="diffHard" onclick="selectDiff('hard')">挑战</button>
+              </div>
+              <button class="btn btn-red btn-lg" onclick="startQuiz()">开始答题</button>
+            </div>
+          </div>
+
+          <!-- Active quiz -->
+          <div class="quiz-active-wrap" id="quizActiveScreen">
+            <div class="quiz-hud">
+              <div class="hud-timer">
+                <svg width="20" height="20" viewBox="0 0 20 20"><circle cx="10" cy="11" r="8" fill="none" stroke="var(--red)" stroke-width="1.8"/><path d="M10 7 L10 11 L13 13" stroke="var(--red)" stroke-width="1.6" stroke-linecap="round"/><rect x="8" y="1" width="4" height="2.5" rx="1" fill="var(--red)"/></svg>
+                剩余时间：<span class="hud-timer-val" id="quizTimer">30</span>秒
+              </div>
+              <div style="text-align:center;">
+                <div style="font-size:0.78rem;color:var(--ink-light);letter-spacing:2px;" id="quizProgressText">第 1 / 10 题</div>
+              </div>
+              <div class="hud-score-label">当前得分：<span class="hud-score" id="quizScore">0</span>分</div>
+            </div>
+            <div class="quiz-progress-bar-wrap">
+              <div class="quiz-progress-bar-fill" id="quizProgressBar" style="width:0%"></div>
+            </div>
+            <div class="card question-card-body">
+              <div class="q-num-tag" id="qNumTag">第 1 题</div>
+              <div class="q-text" id="qText"></div>
+              <div class="options-list" id="qOptions"></div>
+              <div class="explanation-wrap" id="qExplanation">
+                <div class="expl-title">
+                  <svg width="16" height="16" viewBox="0 0 16 16"><rect x="2" y="2" width="12" height="12" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><line x1="5" y1="6" x2="11" y2="6" stroke="currentColor" stroke-width="1.2"/><line x1="5" y1="9" x2="11" y2="9" stroke="currentColor" stroke-width="1.2"/></svg>
+                  知识背景
+                </div>
+                <div class="expl-text" id="qExplText"></div>
+              </div>
+            </div>
+            <div class="quiz-next-row">
+              <button class="btn btn-red hidden" id="btnNext" onclick="nextQuestion()">下一题 →</button>
+            </div>
+          </div>
+
+          <!-- Result -->
+          <div class="result-wrap" id="quizResultScreen">
+            <div class="result-trophy" id="resultTrophy">🏆</div>
+            <div class="result-score-num" id="resultScore">0</div>
+            <div class="result-score-unit">/ 100 分</div>
+            <div class="result-stars" id="resultStars">☆☆☆☆☆</div>
+            <div class="result-grade" id="resultGrade"></div>
+            <div class="result-msg" id="resultMsg"></div>
+            <div class="result-stats-row">
+              <div class="r-stat"><span class="r-stat-val" id="statCorrect">0</span><span class="r-stat-label">答对题数</span></div>
+              <div class="r-stat"><span class="r-stat-val" id="statWrong">0</span><span class="r-stat-label">答错题数</span></div>
+              <div class="r-stat"><span class="r-stat-val" id="statTime">0s</span><span class="r-stat-label">用时</span></div>
+            </div>
+            <div class="result-knowledge-box" id="resultKnowledge" style="display:none;">
+              <div class="rk-title">📖 知识拓展</div>
+              <div class="rk-text" id="rkText"></div>
+            </div>
+            <div class="result-btns">
+              <button class="btn btn-red" onclick="restartQuiz()">再来一局</button>
+              <button class="btn btn-gold" onclick="switchMainTab('board')">查看排行</button>
+              <button class="btn btn-outline" onclick="switchMainTab('learn')">继续学习</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== BOARD TAB ===== -->
+    <div id="tabBoard" style="display:none;">
+      <div style="max-width:660px;margin:0 auto;">
+        <div class="section-header mb-3">
+          <div class="section-title">🏆 荣耀排行榜</div>
+          <div class="section-sub">与全体学习者共同竞技 · 登顶文化之巅</div>
+        </div>
+        <div class="board-header">
+          <div class="board-tabs">
+            <button class="board-tab active" onclick="filterBoard('all')">总排行榜</button>
+            <button class="board-tab" onclick="filterBoard('mine')">我的记录</button>
+            <button class="board-tab" onclick="filterBoard('top10')">Top 10</button>
+          </div>
+        </div>
+        <div class="board-personal" id="boardPersonal">
+          <div>
+            <div class="bp-label">我的历史最高分</div>
+            <div class="bp-name" id="bpName"></div>
+          </div>
+          <div class="bp-score" id="bpScore">--</div>
+        </div>
+        <ul class="board-list" id="boardList"></ul>
+      </div>
+    </div>
+
+    <!-- ===== PROFILE TAB ===== -->
+    <div id="tabProfile" style="display:none;">
+      <div class="profile-wrap">
+        <div class="profile-top">
+          <div class="profile-avatar" id="profileAvatar">A</div>
+          <div class="profile-name" id="profileName">用户</div>
+          <div class="profile-badge" id="profileBadge">初学者</div>
+        </div>
+        <div class="stats-grid mb-3">
+          <div class="stat-card">
+            <div class="stat-card-icon">✍️</div>
+            <span class="stat-card-val" id="stTotal">0</span>
+            <span class="stat-card-lbl">累计答题</span>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-icon">🏆</div>
+            <span class="stat-card-val" id="stBest">0</span>
+            <span class="stat-card-lbl">历史最高</span>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-icon">✅</div>
+            <span class="stat-card-val" id="stAccuracy">0%</span>
+            <span class="stat-card-lbl">正确率</span>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card-icon">📚</div>
+            <span class="stat-card-val" id="stRead">0</span>
+            <span class="stat-card-lbl">阅读知识</span>
+          </div>
+        </div>
+        <div class="card mb-3" style="padding:24px;">
+          <div style="font-family:'ZCOOL XiaoWei',serif;color:var(--gold);letter-spacing:3px;margin-bottom:16px;font-size:0.95rem;padding-bottom:8px;border-bottom:1px solid var(--border);">🎖️ 获得成就</div>
+          <div class="achievement-grid" id="achievementList"></div>
+        </div>
+        <div class="card" style="padding:24px;">
+          <div style="font-family:'ZCOOL XiaoWei',serif;color:var(--gold);letter-spacing:3px;margin-bottom:16px;font-size:0.95rem;padding-bottom:8px;border-bottom:1px solid var(--border);">⚙️ 账号设置</div>
+          <div class="form-group">
+            <label class="form-label">修改密码</label>
+            <input class="form-input" type="password" id="newPass" placeholder="输入新密码">
+          </div>
+          <div class="form-group">
+            <label class="form-label">确认新密码</label>
+            <input class="form-input" type="password" id="newPass2" placeholder="再次输入新密码">
+          </div>
+          <button class="btn btn-gold btn-sm mt-1" onclick="changePassword()">确认修改</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== ABOUT TAB ===== -->
+    <div id="tabAbout" style="display:none;">
+      <div class="about-wrap">
+        <div class="section-header mb-3">
+          <div class="section-title">项目介绍</div>
+          <div class="section-sub">关于中华民族文化智慧学习平台</div>
+        </div>
+        <div class="card about-intro-card mb-3">
+          <h3>项目简介</h3>
+          <p>中华民族文化智慧学习平台是一款以中华优秀传统文化为核心的在线学习与答题系统，旨在通过趣味化、互动化的方式，让更多人了解和传承中华民族优秀文化，增强民族自豪感与文化自信心。平台涵盖五十六个民族的历史、服饰、节庆、非遗等多维度内容，是学习中华文化的理想伙伴。</p>
+          <h3 style="margin-top:20px;">核心功能</h3>
+          <div class="features-about">
+            <div class="fa-item"><div class="fa-icon">📚</div><div class="fa-name">文化学习</div></div>
+            <div class="fa-item"><div class="fa-icon">📝</div><div class="fa-name">在线答题</div></div>
+            <div class="fa-item"><div class="fa-icon">⭐</div><div class="fa-name">自动评分</div></div>
+            <div class="fa-item"><div class="fa-icon">🏆</div><div class="fa-name">排行榜</div></div>
+            <div class="fa-item"><div class="fa-icon">🌿</div><div class="fa-name">知识拓展</div></div>
+          </div>
+          <h3>技术栈</h3>
+          <div class="tech-tags">
+            <span class="tech-tag">HTML5</span>
+            <span class="tech-tag">CSS3</span>
+            <span class="tech-tag">JavaScript</span>
+            <span class="tech-tag">LocalStorage</span>
+            <span class="tech-tag">Web Audio API</span>
+            <span class="tech-tag">SVG</span>
+          </div>
+          <h3>设计理念</h3>
+          <p>平台融合传统中国美学与现代 ins 风格设计，以暖米色调、朱砂红与金色为主色彩，辅以梅花、飞鸟、山水等传统元素，营造典雅而不失活力的学习氛围。各民族文化图标以剪纸风格的 SVG 插画呈现，直观传达民族特色。</p>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end main-content -->
+</div><!-- end page-main -->
+
+</div><!-- end app -->
+
+<script>
+// =============================
+// DATA: KNOWLEDGE BASE
+// =============================
+const KNOWLEDGE_BASE = [
+  {
+    id: 'tibetan', tag: '藏族', name: '藏族文化',
+    color: ['#8B3A1A','#F5E8D0'],
+    desc: '雪域高原上的神秘文明，传承千年的唐卡艺术与天葬习俗',
+    detail: `
+      <h3>藏族概览</h3>
+      <p>藏族是中国少数民族之一，主要分布在西藏自治区、青海、四川、云南及甘肃等地，总人口约700余万。藏族拥有独特的语言文字、宗教信仰与艺术传统，是世界屋脊上最灿烂的文明之一。</p>
+      <div class="detail-imgs"><div class="detail-img-box">🙏</div><div class="detail-img-box">🎨</div><div class="detail-img-box">🥁</div></div>
+      <h3>唐卡艺术</h3>
+      <p>唐卡（Thangka）是藏族文化中最具代表性的绘画艺术，绘于丝绢或纸张上，内容多为宗教人物与故事。唐卡颜料取自矿物质与植物，历经千年不褪色，被列为国家级非物质文化遗产。</p>
+      <h3>民族服饰</h3>
+      <p>藏族服饰以藏袍为主，宽大厚实，适应高原气候。男式藏袍多为棕色或白色，女式藏袍色彩艳丽，搭配多彩邦典（围裙）。节日时佩戴精美的珠宝首饰，彰显民族特色。</p>
+      <h3>节日习俗</h3>
+      <p>藏历新年（洛萨）是藏族最重要的传统节日，家家户户装饰房屋，制作青稞酒和特色食品。雪顿节（酸奶节）期间，寺庙展示巨幅唐卡，民众穿着盛装观看藏戏演出。</p>
+      <h3>传统音乐</h3>
+      <p>藏族传统音乐以喉音唱法著称，这种独特发声方式被称为"多声部唱法"，已被列入联合国教科文组织非物质文化遗产名录。藏戏（阿吉拉姆）融合音乐、舞蹈与戏剧，是藏族最古老的综合艺术形式。</p>`
+  },
+  {
+    id: 'mongolian', tag: '蒙古族', name: '蒙古族文化',
+    color: ['#1A4A8B','#E0EEFF'],
+    desc: '马背上的民族，苍茫草原上流传的马头琴与那达慕盛会',
+    detail: `
+      <h3>蒙古族概览</h3>
+      <p>蒙古族是一个历史悠久、文化丰富的民族，主要分布在内蒙古自治区及新疆、辽宁等地。以游牧文化著称，被誉为"马背上的民族"，拥有独特的生产生活方式和丰富的文化传统。</p>
+      <div class="detail-imgs"><div class="detail-img-box">🏕️</div><div class="detail-img-box">🎻</div><div class="detail-img-box">🏹</div></div>
+      <h3>蒙古包文化</h3>
+      <p>蒙古包是蒙古族传统居所，圆形穹顶结构，拆装便捷，适应游牧生活。蒙古包门朝南开，内部布置讲究方位秩序，是草原文明的智慧结晶，现已列入国家非物质文化遗产。</p>
+      <h3>马头琴</h3>
+      <p>马头琴（Morin Khuur）是蒙古族最具代表性的乐器，因琴头雕有马头而得名。音色浑厚悠扬，能模拟马匹嘶鸣与风声，被称为"草原音乐的灵魂"，已列入联合国非物质文化遗产。</p>
+      <h3>那达慕大会</h3>
+      <p>那达慕是蒙古族最盛大的传统节日，每年夏季举行，包含摔跤、赛马、射箭三大传统竞技项目，统称"男儿三艺"。那达慕是祭祀、社交与娱乐的综合盛会，已传承数百年。</p>
+      <h3>民族服饰</h3>
+      <p>蒙古族服饰以蒙古袍（Deel）为主，款式宽大，便于骑马。颜色鲜艳，多以丝绸制作，镶有精美刺绣。腰带是重要配饰，男性扎束腰带，女性多不束腰。节日时佩戴银质头饰与珠宝。</p>`
+  },
+  {
+    id: 'dai', tag: '傣族', name: '傣族文化',
+    color: ['#0A7A6A','#E0F5F0'],
+    desc: '水的民族，泼水节的欢腾与孔雀舞的曼妙姿态',
+    detail: `
+      <h3>傣族概览</h3>
+      <p>傣族主要分布在云南省西双版纳和德宏等地，是一个崇尚水文化的民族，信仰南传佛教。傣族文化以其独特的泼水节、孔雀舞和精美的水利农耕文明享誉中外。</p>
+      <div class="detail-imgs"><div class="detail-img-box">💦</div><div class="detail-img-box">🦚</div><div class="detail-img-box">🛶</div></div>
+      <h3>泼水节</h3>
+      <p>泼水节是傣族最重要的传统节日，通常在公历四月中旬举行，历时3-4天。节日期间人们互相泼水祈福，象征洗去旧年晦气、迎接新年吉祥，是傣族新年庆典，也是东南亚地区共同的文化节日。</p>
+      <h3>孔雀舞</h3>
+      <p>孔雀舞是傣族最具代表性的民族舞蹈，以优美的舞姿模仿孔雀的各种形态，已有上千年历史。舞者身着华丽孔雀尾饰，动作轻盈，节奏明快，2008年被列为国家级非物质文化遗产。</p>
+      <h3>民族服饰</h3>
+      <p>傣族女性传统服饰为紧身窄袖短衫配长筒裙，色彩艳丽，多用丝绸制作，展现女性曲线美感。傣族男性着对襟短衫和长裤，头缠白色或蓝色布巾。节日时装扮更为华美。</p>
+      <h3>赛龙舟</h3>
+      <p>傣族龙舟节在每年傣历十二月举行，与泼水节并称傣族两大传统节日。龙舟比赛热闹非凡，展现傣族对水的崇敬与热爱。傣族的水利灌溉技术高度发达，"水田农业"是其文明核心。</p>`
+  },
+  {
+    id: 'yi', tag: '彝族', name: '彝族文化',
+    color: ['#6B1A0A','#FFE8DF'],
+    desc: '火的民族，传承三千年的彝文与热情豪迈的火把节',
+    detail: `
+      <h3>彝族概览</h3>
+      <p>彝族是中国西南地区人口最多的少数民族之一，主要分布在云南、四川、贵州等地。彝族拥有自己独特的文字（彝文），是世界上少数几个具有独立文字体系的少数民族之一。</p>
+      <div class="detail-imgs"><div class="detail-img-box">🔥</div><div class="detail-img-box">📜</div><div class="detail-img-box">🎶</div></div>
+      <h3>火把节</h3>
+      <p>火把节是彝族最盛大的传统节日，每年农历六月二十四日举行，被称为"东方的狂欢节"。节日期间人们手持火把游行，举行摔跤、赛马、斗牛等活动，篝火晚会通宵达旦，象征驱邪迎福。</p>
+      <h3>彝文字</h3>
+      <p>彝文是彝族独有的文字体系，约有10000多个字符，现行规范彝文819个，是中国少数民族中为数不多保留完整文字的民族。古彝文多见于经典、历史记载，被彝族毕摩（祭司）世代传承。</p>
+      <h3>民族服饰</h3>
+      <p>彝族服饰色彩鲜艳，以黑、红、黄三色为主。女性穿多层百褶裙，头戴英雄结（鸡冠帽）；男性穿绣花短衣，扎裹腿。彝族刺绣精美，图案多为动物、植物和几何纹样，具有鲜明民族特色。</p>
+      <h3>传统音乐</h3>
+      <p>彝族传统乐器多种多样，口弦（竹制拨奏乐器）是彝族少女传情的工具，月琴、葫芦笙各具特色。彝族民歌分为情歌、酒歌、劳动歌等类型，多以山歌对唱方式演唱。</p>`
+  },
+  {
+    id: 'miao', tag: '苗族', name: '苗族文化',
+    color: ['#4A2A7A','#F0E8FF'],
+    desc: '苗银闪耀的盛装，千年传承的蜡染技艺与芦笙舞蹈',
+    detail: `
+      <h3>苗族概览</h3>
+      <p>苗族是中国人口较多的少数民族，主要分布在贵州、云南、湖南、广西等地。苗族历史悠久，有着丰富的神话传说与独特的文化艺术，以苗银、蜡染、刺绣闻名于世。</p>
+      <div class="detail-imgs"><div class="detail-img-box">🪘</div><div class="detail-img-box">🎭</div><div class="detail-img-box">💎</div></div>
+      <h3>苗族银饰</h3>
+      <p>苗族银饰是中国少数民族中最华美的装饰艺术之一。盛装时，一套完整的苗族银饰重达十余斤，包括银帽、银项圈、银手镯等。苗族银饰制作技艺被列为国家级非物质文化遗产，是苗族文化认同的重要象征。</p>
+      <h3>蜡染技艺</h3>
+      <p>苗族蜡染是以蜂蜡在布料上绘制图案，经染色后去蜡显出白色花纹的传统工艺，历史已超过两千年。图案多为蝴蝶、鸟类和几何纹样，蕴含丰富的神话寓意，已被列为国家非遗保护项目。</p>
+      <h3>芦笙舞</h3>
+      <p>芦笙舞是苗族最具代表性的传统舞蹈，以芦笙伴奏，边吹边舞，动作刚健而优美。苗族节日如芦笙节（苗年）期间，数千人同场共舞，蔚为壮观。芦笙舞已入选国家非物质文化遗产名录。</p>
+      <h3>苗族盛装</h3>
+      <p>苗族有"无字史书"之称，历史记录全靠服饰图案传承。苗族盛装是世界上最复杂的民族服装之一，集刺绣、银饰、蜡染于一体，一套传统盛装往往需要数年甚至数十年才能完成。</p>`
+  },
+  {
+    id: 'zhuang', tag: '壮族', name: '壮族文化',
+    color: ['#1A6B3A','#E0F5E8'],
+    desc: '人口最多的少数民族，壮锦之美与三月三对歌的浪漫',
+    detail: `
+      <h3>壮族概览</h3>
+      <p>壮族是中国人口最多的少数民族，约有1700余万人，主要分布在广西壮族自治区。壮族历史悠久，以壮锦、铜鼓、花山壁画等著名，具有深厚的稻作农耕文明基础。</p>
+      <div class="detail-imgs"><div class="detail-img-box">🥁</div><div class="detail-img-box">🎨</div><div class="detail-img-box">🎋</div></div>
+      <h3>壮锦</h3>
+      <p>壮锦是壮族传统手工艺品，以棉纱为经，丝线为纬，织出具有独特民族风格的彩色锦缎。图案多为动物、植物和几何纹样，色彩艳丽，工艺精湛，被列为国家非物质文化遗产。</p>
+      <h3>铜鼓文化</h3>
+      <p>铜鼓是壮族最具代表性的传统乐器，也是权力与财富的象征。壮族铜鼓制作历史超过2000年，鼓面纹饰精美，蕴含丰富的文化内涵，是研究壮族历史的重要文物。</p>
+      <h3>三月三歌节</h3>
+      <p>农历三月三是壮族最盛大的传统节日，青年男女通过歌圩（对歌）表达情感，互赠彩蛋与绣球，已被列为广西法定节假日，是壮族文化中最具代表性的艺术形式。</p>
+      <h3>花山壁画</h3>
+      <p>花山壁画位于广西宁明，绘制时间可追溯至战国至东汉时期，是世界最大的崖壁画群，2016年被列入世界遗产名录，记录了古代壮族先民的生产生活与宗教祭祀场面。</p>`
+  },
+  {
+    id: 'korean', tag: '朝鲜族', name: '朝鲜族文化',
+    color: ['#2A6A8B','#E0F0FF'],
+    desc: '能歌善舞的民族，长鼓欢鸣与阿里郎的深情旋律',
+    detail: `
+      <h3>朝鲜族概览</h3>
+      <p>朝鲜族主要分布在吉林省延边朝鲜族自治州，是中国能歌善舞的少数民族之一。朝鲜族拥有高度重视教育的传统，具有独特的饮食文化与艺术传统，享誉全国。</p>
+      <div class="detail-imgs"><div class="detail-img-box">🥁</div><div class="detail-img-box">🎵</div><div class="detail-img-box">🍜</div></div>
+      <h3>阿里郎</h3>
+      <p>阿里郎是朝鲜族最著名的民歌，旋律优美，情感丰富，已传唱数百年，具有重要的民族文化认同意义。以其命名的民谣、舞蹈、音乐贯穿朝鲜族文化，是民族精神的音乐载体。</p>
+      <h3>长鼓舞</h3>
+      <p>长鼓舞是朝鲜族最具代表性的民族舞蹈，舞者身着朝鲜族传统服装，击打长鼓，舞姿优美，节奏欢快。长鼓舞已被列为国家级非物质文化遗产，在国际文化舞台上享有盛誉。</p>
+      <h3>民族服饰</h3>
+      <p>朝鲜族传统服饰（韩服）以素雅清新著称，女性穿宽大裙子配短衣（则高利），男性穿宽裤与短衣，颜色以白色、粉色、天蓝为主，节日时服装更加华美精致。</p>
+      <h3>饮食文化</h3>
+      <p>朝鲜族饮食以米饭为主，辅以泡菜、冷面等特色食品。朝鲜族辣白菜（泡菜）制作技艺独特，已成为中国饮食文化的重要组成部分，延边地区也以美食文化著称。</p>`
+  },
+  {
+    id: 'uyghur', tag: '维吾尔族', name: '维吾尔族文化',
+    color: ['#7A5A10','#FFF0D0'],
+    desc: '歌舞之乡，十二木卡姆的天籁与丰饶的西域风情',
+    detail: `
+      <h3>维吾尔族概览</h3>
+      <p>维吾尔族是中国西北地区重要的少数民族，主要分布在新疆维吾尔自治区。维吾尔族拥有悠久的历史和灿烂的文化，以歌舞艺术、手工艺品和丰富的饮食文化享誉中外。</p>
+      <div class="detail-imgs"><div class="detail-img-box">🎵</div><div class="detail-img-box">🪘</div><div class="detail-img-box">🍇</div></div>
+      <h3>十二木卡姆</h3>
+      <p>十二木卡姆是维吾尔族最具代表性的音乐体裁，是集歌唱、音乐、舞蹈于一体的大型综合性艺术形式，规模宏大，被誉为"维吾尔音乐之母"，已列入联合国非物质文化遗产代表作名录。</p>
+      <h3>麦西来甫</h3>
+      <p>麦西来甫是维吾尔族最重要的传统民俗活动，集歌舞、娱乐、交友于一体，是民众欢聚交流的重要形式，也是维吾尔族民间文化传承的重要载体，已被列为国家级非遗项目。</p>
+      <h3>民族服饰</h3>
+      <p>维吾尔族男性传统服饰为绣花小帽（多帕）、长袍，女性穿艾德莱斯绸连衣裙，色彩鲜艳，花纹精美。多帕是维吾尔族男性重要的文化标志，图案各地不同，传达丰富的文化信息。</p>
+      <h3>手工艺品</h3>
+      <p>维吾尔族的地毯、和田玉雕、铜器、木器、金银饰品制作技艺精湛，具有浓郁的西域风情。和田玉是新疆最著名的特产，和田地毯则是世界著名的手工艺品，远销海内外。</p>`
+  },
+  {
+    id: 'tujia', tag: '土家族', name: '土家族文化',
+    color: ['#3A5A2A','#E8F5E0'],
+    desc: '摆手舞与西兰卡普，依山而居的吊脚楼文明',
+    detail: `
+      <h3>土家族概览</h3>
+      <p>土家族主要分布在湖南、湖北、重庆、贵州等地的武陵山区，是一个有着悠久历史的少数民族。土家族文化以摆手舞、西兰卡普（土家锦）和吊脚楼民居最为著名。</p>
+      <div class="detail-imgs"><div class="detail-img-box">🏠</div><div class="detail-img-box">🎵</div><div class="detail-img-box">🧵</div></div>
+      <h3>吊脚楼</h3>
+      <p>吊脚楼是土家族传统民居，依山而建，部分柱子悬空支撑，结构巧妙，上层住人、下层养牲畜或存放农具，是土家族先民与自然和谐共处的智慧体现，已列入国家非遗保护名录。</p>
+      <h3>摆手舞</h3>
+      <p>摆手舞是土家族最具代表性的传统舞蹈，参与人数众多，动作古朴刚健，反映土家族的生产生活与历史故事。每年农历正月举行大型摆手活动，数千人同场共舞，气势壮观。</p>
+      <h3>西兰卡普</h3>
+      <p>西兰卡普是土家族传统手工织锦，色彩鲜艳，图案精美，主要有动植物、吉祥图案等，是土家族女性必备的嫁妆和重要礼物，制作技艺已被列为国家级非物质文化遗产。</p>
+      <h3>哭嫁习俗</h3>
+      <p>哭嫁是土家族特有的婚嫁习俗，新娘在出嫁前以歌声哭诉对父母的感恩和对家乡的眷恋，歌词即兴，情感真挚。哭嫁歌已被认定为重要的非物质文化遗产。</p>`
+  },
+  {
+    id: 'naxi', tag: '纳西族', name: '纳西族文化',
+    color: ['#1A4A6B','#E0EFFF'],
+    desc: '东巴象形文字与披星戴月，丽江古城旁的神秘文明',
+    detail: `
+      <h3>纳西族概览</h3>
+      <p>纳西族主要分布在云南省丽江市，是一个具有独特文化传统的少数民族。纳西族以东巴文字、东巴文化和精美的工艺闻名，丽江古城与东巴文化共同被列入世界遗产名录。</p>
+      <div class="detail-imgs"><div class="detail-img-box">📜</div><div class="detail-img-box">🌟</div><div class="detail-img-box">🎻</div></div>
+      <h3>东巴文字</h3>
+      <p>东巴文是纳西族特有的象形文字体系，是目前世界上唯一仍在使用的活着的象形文字，相关典籍已被列入联合国教科文组织世界记忆名录，是人类文明珍贵的文化记忆。</p>
+      <h3>披星戴月服饰</h3>
+      <p>纳西族女性服饰有"披星戴月"之称，上衣缀有七颗圆形饰物象征七星，背部缝有两个圆形刺绣代表日月，寓意"肩负日月、背负星辰"，体现纳西族对宇宙自然的崇敬。</p>
+      <h3>纳西古乐</h3>
+      <p>纳西古乐是流传于丽江的一种古典音乐形式，融合了汉族、藏族和纳西族的音乐元素，保留了大量唐宋时代的古老乐章，被誉为"音乐活化石"，是中国音乐史的珍贵遗产。</p>
+      <h3>三多节</h3>
+      <p>三多节是纳西族最盛大的传统节日，祭祀纳西族最高神灵三多神（白沙战神），每年农历二月初八举行，节日期间举行隆重的祭祀仪式，展示纳西族的宗教信仰与文化传统。</p>`
+  }
+];
+
+// Ethnic group SVG icons - paper-cut flat design style
+function getEthnicIcon(id, colors) {
+  const [bg, light] = colors;
+  const icons = {
+    tibetan: `<svg viewBox="0 0 120 150" xmlns="http://www.w3.org/2000/svg">
+      <defs><linearGradient id="tg${id}" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="${light}"/><stop offset="100%" stop-color="${light}" stop-opacity="0.4"/></linearGradient></defs>
+      <rect width="120" height="150" fill="url(#tg${id})"/>
+      <!-- Mountain background -->
+      <path d="M0,120 Q30,80 60,100 Q90,70 120,100 L120,150 L0,150 Z" fill="${bg}" opacity="0.12"/>
+      <!-- Body in wide robe -->
+      <path d="M38,75 Q60,68 82,75 L88,128 Q60,134 32,128 Z" fill="${bg}"/>
+      <!-- Wide sleeves -->
+      <path d="M38,80 Q18,88 16,108 L38,104 Z" fill="${bg}" opacity="0.85"/>
+      <path d="M82,80 Q102,88 104,108 L82,104 Z" fill="${bg}" opacity="0.85"/>
+      <!-- Gold sash -->
+      <rect x="40" y="96" width="40" height="7" rx="3" fill="#D4A830"/>
+      <!-- Neck -->
+      <rect x="54" y="62" width="12" height="14" rx="4" fill="#F5C9A0"/>
+      <!-- Head -->
+      <ellipse cx="60" cy="52" rx="16" ry="18" fill="#F5C9A0"/>
+      <!-- Lama hat -->
+      <path d="M44,46 Q60,20 76,46 L72,50 L48,50 Z" fill="${bg}"/>
+      <ellipse cx="60" cy="48" rx="14" ry="4" fill="${bg}" opacity="0.8"/>
+      <!-- Face details -->
+      <ellipse cx="54" cy="52" rx="2" ry="2.5" fill="#3D2010" opacity="0.6"/>
+      <ellipse cx="66" cy="52" rx="2" ry="2.5" fill="#3D2010" opacity="0.6"/>
+      <path d="M56 59 Q60 62 64 59" stroke="#3D2010" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+      <!-- Prayer wheel in right hand -->
+      <circle cx="96" cy="100" r="8" fill="${bg}" opacity="0.7"/>
+      <circle cx="96" cy="100" r="5" fill="#D4A830"/>
+      <line x1="82" y1="104" x2="96" y2="100" stroke="#6B3A1A" stroke-width="2"/>
+      <!-- Robe decoration -->
+      <path d="M50,80 Q60,76 70,80" stroke="#D4A830" stroke-width="1.5" fill="none" opacity="0.6"/>
+      <!-- Legs/boots -->
+      <rect x="44" y="126" width="14" height="18" rx="4" fill="#3D2010"/>
+      <rect x="62" y="126" width="14" height="18" rx="4" fill="#3D2010"/>
+    </svg>`,
+    mongolian: `<svg viewBox="0 0 120 150" xmlns="http://www.w3.org/2000/svg">
+      <rect width="120" height="150" fill="${light}" opacity="0.5"/>
+      <!-- Grassland -->
+      <ellipse cx="60" cy="145" rx="80" ry="20" fill="${bg}" opacity="0.1"/>
+      <!-- Horse body -->
+      <ellipse cx="70" cy="115" rx="28" ry="14" fill="#C8A060"/>
+      <path d="M42,115 Q35,125 40,130 L55,128 Q50,120 55,115 Z" fill="#C8A060"/>
+      <path d="M98,115 Q108,118 108,130 L100,130 Q98,120 95,115 Z" fill="#C8A060"/>
+      <path d="M88,108 Q100,100 106,112 L98,114 Z" fill="#C8A060"/>
+      <!-- Horse head -->
+      <ellipse cx="104" cy="108" rx="8" ry="6" fill="#C8A060"/>
+      <path d="M110,108 Q116,106 115,112 L110,112 Z" fill="#C8A060"/>
+      <!-- Horse mane -->
+      <path d="M98,102 Q100,95 96,98 Q98,90 94,94" stroke="#6B4020" stroke-width="2" fill="none" stroke-linecap="round"/>
+      <!-- Horse tail -->
+      <path d="M42,115 Q28,105 30,120" stroke="#6B4020" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      <!-- Rider body - Deel coat -->
+      <path d="M46,80 Q60,74 74,80 L76,108 Q60,112 44,108 Z" fill="${bg}"/>
+      <!-- Neck -->
+      <rect x="54" y="66" width="12" height="14" rx="4" fill="#F0C080"/>
+      <!-- Head -->
+      <ellipse cx="60" cy="56" rx="15" ry="17" fill="#F0C080"/>
+      <!-- Mongolian headband -->
+      <rect x="46" y="46" width="28" height="8" rx="4" fill="${bg}" opacity="0.9"/>
+      <!-- Face -->
+      <ellipse cx="54" cy="56" rx="2" ry="2.5" fill="#2D1810" opacity="0.6"/>
+      <ellipse cx="66" cy="56" rx="2" ry="2.5" fill="#2D1810" opacity="0.6"/>
+      <path d="M56 63 Q60 66 64 63" stroke="#2D1810" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+      <!-- Coat belt -->
+      <rect x="48" y="92" width="24" height="5" rx="2" fill="#D4A830"/>
+      <!-- Riding arm with bow -->
+      <line x1="76" y1="88" x2="95" y2="80" stroke="${bg}" stroke-width="5" stroke-linecap="round"/>
+      <path d="M94,72 Q100,80 94,88" stroke="#8B6030" stroke-width="2" fill="none"/>
+      <line x1="94" y1="72" x2="94" y2="88" stroke="#D4A830" stroke-width="1" stroke-dasharray="2,2"/>
+      <!-- Coat colors/embroidery -->
+      <path d="M52,82 Q60,79 68,82" stroke="#D4A830" stroke-width="1.2" fill="none" opacity="0.7"/>
+    </svg>`,
+    dai: `<svg viewBox="0 0 120 150" xmlns="http://www.w3.org/2000/svg">
+      <rect width="120" height="150" fill="${light}" opacity="0.5"/>
+      <!-- Water ripple background -->
+      <ellipse cx="60" cy="140" rx="55" ry="12" fill="${bg}" opacity="0.1"/>
+      <ellipse cx="60" cy="145" rx="50" ry="8" fill="${bg}" opacity="0.07"/>
+      <!-- Sarong skirt (long, wrapped) -->
+      <path d="M40,92 Q60,88 80,92 L82,138 Q60,142 38,138 Z" fill="${bg}"/>
+      <!-- Sarong pattern lines -->
+      <line x1="40" y1="100" x2="80" y2="100" stroke="${light}" stroke-width="1.5" opacity="0.6"/>
+      <line x1="40" y1="108" x2="80" y2="108" stroke="${light}" stroke-width="1.5" opacity="0.6"/>
+      <line x1="40" y1="116" x2="80" y2="116" stroke="${light}" stroke-width="1.5" opacity="0.6"/>
+      <!-- Tight fitted blouse -->
+      <path d="M44,70 Q60,64 76,70 L78,94 Q60,98 42,94 Z" fill="#D4A830"/>
+      <!-- Small sleeves -->
+      <path d="M44,72 Q32,76 34,88 L44,86 Z" fill="#D4A830" opacity="0.9"/>
+      <path d="M76,72 Q88,76 86,88 L76,86 Z" fill="#D4A830" opacity="0.9"/>
+      <!-- Neck -->
+      <rect x="54" y="58" width="12" height="14" rx="4" fill="#F5C9A0"/>
+      <!-- Head -->
+      <ellipse cx="60" cy="48" rx="16" ry="18" fill="#F5C9A0"/>
+      <!-- Hair bun with peacock feather decoration -->
+      <ellipse cx="60" cy="34" rx="10" ry="8" fill="#2D1810"/>
+      <!-- Peacock feathers -->
+      <line x1="68" y1="30" x2="82" y2="12" stroke="${bg}" stroke-width="2"/>
+      <ellipse cx="83" cy="10" rx="5" ry="8" fill="${bg}" opacity="0.8" transform="rotate(-20,83,10)"/>
+      <circle cx="83" cy="8" r="3" fill="#D4A830"/>
+      <line x1="72" y1="28" x2="90" y2="18" stroke="${bg}" stroke-width="1.5" opacity="0.7"/>
+      <ellipse cx="91" cy="16" rx="4" ry="6" fill="${bg}" opacity="0.7" transform="rotate(-10,91,16)"/>
+      <!-- Face -->
+      <ellipse cx="54" cy="48" rx="2" ry="2.5" fill="#3D2010" opacity="0.6"/>
+      <ellipse cx="66" cy="48" rx="2" ry="2.5" fill="#3D2010" opacity="0.6"/>
+      <path d="M56 55 Q60 58 64 55" stroke="#3D2010" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+      <!-- Necklace -->
+      <path d="M48,66 Q60,72 72,66" stroke="${bg}" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      <!-- Water splash decorative -->
+      <path d="M20,130 Q25,122 30,128" stroke="${bg}" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.5"/>
+      <path d="M90,132 Q95,124 100,130" stroke="${bg}" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.5"/>
+    </svg>`,
+    yi: `<svg viewBox="0 0 120 150" xmlns="http://www.w3.org/2000/svg">
+      <rect width="120" height="150" fill="${light}" opacity="0.5"/>
+      <!-- Fire glow at bottom -->
+      <ellipse cx="60" cy="148" rx="45" ry="12" fill="#FF6020" opacity="0.15"/>
+      <!-- Multi-layer skirt (百褶裙) -->
+      <path d="M36,98 Q60,92 84,98 L90,138 Q60,144 30,138 Z" fill="${bg}"/>
+      <path d="M38,105 Q60,100 82,105 L86,138 Q60,143 34,138 Z" fill="${bg}" opacity="0.7"/>
+      <!-- Skirt yellow trim -->
+      <path d="M36,98 L84,98" stroke="#FFD700" stroke-width="2.5"/>
+      <path d="M35,106 L85,106" stroke="#FFD700" stroke-width="1.5" opacity="0.7"/>
+      <!-- Top embroidered jacket -->
+      <path d="M42,72 Q60,66 78,72 L80,100 Q60,104 40,100 Z" fill="#1A1A1A"/>
+      <!-- Red trim on jacket -->
+      <path d="M42,72 Q60,68 78,72" stroke="${bg}" stroke-width="3"/>
+      <path d="M44,80 Q60,76 76,80" stroke="#FFD700" stroke-width="1.5"/>
+      <!-- Neck -->
+      <rect x="54" y="58" width="12" height="16" rx="4" fill="#F0C880"/>
+      <!-- Head -->
+      <ellipse cx="60" cy="48" rx="15" ry="17" fill="#F0C880"/>
+      <!-- Chicken comb hat (鸡冠帽) - distinctive Yi feature -->
+      <path d="M46,38 Q60,8 74,38" fill="${bg}" stroke="${bg}" stroke-width="1"/>
+      <path d="M50,38 Q60,15 70,38" fill="#FFD700" opacity="0.7"/>
+      <!-- Hat decorations -->
+      <circle cx="55" cy="28" r="3" fill="#FFD700"/>
+      <circle cx="60" cy="22" r="3" fill="#FF4040"/>
+      <circle cx="65" cy="28" r="3" fill="#FFD700"/>
+      <rect x="44" y="36" width="32" height="6" rx="3" fill="${bg}"/>
+      <!-- Face -->
+      <ellipse cx="54" cy="48" rx="2" ry="2.5" fill="#2D1810" opacity="0.7"/>
+      <ellipse cx="66" cy="48" rx="2" ry="2.5" fill="#2D1810" opacity="0.7"/>
+      <path d="M56 55 Q60 58 64 55" stroke="#2D1810" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+      <!-- Silver wristbands -->
+      <rect x="32" y="92" width="8" height="3" rx="1.5" fill="silver"/>
+      <rect x="80" y="92" width="8" height="3" rx="1.5" fill="silver"/>
+      <!-- Torch in hand -->
+      <line x1="88" y1="98" x2="96" y2="80" stroke="#6B3010" stroke-width="3" stroke-linecap="round"/>
+      <ellipse cx="97" cy="76" rx="5" ry="8" fill="#FF6020" opacity="0.8"/>
+      <ellipse cx="97" cy="72" rx="3" ry="5" fill="#FFD700" opacity="0.9"/>
+    </svg>`,
+    miao: `<svg viewBox="0 0 120 150" xmlns="http://www.w3.org/2000/svg">
+      <rect width="120" height="150" fill="${light}" opacity="0.5"/>
+      <!-- Big silver horn headdress - distinctive Miao feature -->
+      <path d="M34,44 Q20,10 32,2 Q40,0 44,18 Q50,4 60,0 Q70,4 76,18 Q80,0 88,2 Q100,10 86,44" fill="silver" stroke="#C0C0C0" stroke-width="1"/>
+      <path d="M38,40 Q24,14 36,8 Q40,8 44,20" fill="none" stroke="white" stroke-width="1" opacity="0.6"/>
+      <!-- Silver base ring -->
+      <ellipse cx="60" cy="44" rx="26" ry="8" fill="silver"/>
+      <!-- Head beneath -->
+      <ellipse cx="60" cy="54" rx="15" ry="16" fill="#F5C9A0"/>
+      <!-- Hair -->
+      <ellipse cx="60" cy="44" rx="14" ry="6" fill="#2D1810"/>
+      <!-- Face -->
+      <ellipse cx="54" cy="54" rx="2" ry="2.5" fill="#2D1810" opacity="0.6"/>
+      <ellipse cx="66" cy="54" rx="2" ry="2.5" fill="#2D1810" opacity="0.6"/>
+      <path d="M56 61 Q60 64 64 61" stroke="#2D1810" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+      <!-- Neck with silver rings -->
+      <rect x="55" y="68" width="10" height="12" rx="3" fill="#F5C9A0"/>
+      <rect x="54" y="70" width="12" height="3" rx="1.5" fill="silver" opacity="0.8"/>
+      <rect x="54" y="74" width="12" height="3" rx="1.5" fill="silver" opacity="0.8"/>
+      <!-- Embroidered blue top -->
+      <path d="M42,80 Q60,74 78,80 L80,100 Q60,104 40,100 Z" fill="${bg}"/>
+      <!-- Embroidery patterns on top -->
+      <path d="M48,84 Q54,80 60,84 Q66,80 72,84" stroke="#D4A830" stroke-width="1.5" fill="none"/>
+      <!-- Silver necklace -->
+      <path d="M46,78 Q60,84 74,78" stroke="silver" stroke-width="3" fill="none"/>
+      <!-- Blue pleated skirt -->
+      <path d="M40,98 Q60,92 80,98 L84,138 Q60,144 36,138 Z" fill="${bg}" opacity="0.85"/>
+      <!-- Wax-resist pattern lines on skirt -->
+      <path d="M42,105 L78,105" stroke="white" stroke-width="1" opacity="0.5"/>
+      <path d="M41,112 L79,112" stroke="white" stroke-width="1" opacity="0.5"/>
+      <!-- Silver bracelets -->
+      <ellipse cx="38" cy="96" rx="5" ry="3" fill="none" stroke="silver" stroke-width="2.5"/>
+      <ellipse cx="82" cy="96" rx="5" ry="3" fill="none" stroke="silver" stroke-width="2.5"/>
+    </svg>`,
+    zhuang: `<svg viewBox="0 0 120 150" xmlns="http://www.w3.org/2000/svg">
+      <rect width="120" height="150" fill="${light}" opacity="0.5"/>
+      <!-- Bronze drum in background -->
+      <ellipse cx="90" cy="125" rx="22" ry="16" fill="${bg}" opacity="0.25"/>
+      <ellipse cx="90" cy="125" rx="15" ry="10" fill="${bg}" opacity="0.2"/>
+      <circle cx="90" cy="125" r="6" fill="${bg}" opacity="0.15"/>
+      <!-- Floral headdress - distinctive Zhuang feature -->
+      <path d="M44,36 Q60,26 76,36" stroke="${bg}" stroke-width="3" fill="none"/>
+      <!-- Flowers on headdress -->
+      <circle cx="44" cy="34" r="7" fill="#FF6080"/>
+      <circle cx="60" cy="28" r="8" fill="#FF4060"/>
+      <circle cx="76" cy="34" r="7" fill="#FF6080"/>
+      <circle cx="44" cy="34" r="3" fill="#FFD700"/>
+      <circle cx="60" cy="28" r="4" fill="#FFD700"/>
+      <circle cx="76" cy="34" r="3" fill="#FFD700"/>
+      <!-- Hair base -->
+      <ellipse cx="60" cy="42" rx="18" ry="8" fill="#2D1810"/>
+      <!-- Head -->
+      <ellipse cx="60" cy="52" rx="15" ry="16" fill="#F5C9A0"/>
+      <!-- Face -->
+      <ellipse cx="54" cy="52" rx="2" ry="2.5" fill="#2D1810" opacity="0.6"/>
+      <ellipse cx="66" cy="52" rx="2" ry="2.5" fill="#2D1810" opacity="0.6"/>
+      <path d="M56 59 Q60 62 64 59" stroke="#2D1810" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+      <!-- Neck -->
+      <rect x="54" y="66" width="12" height="12" rx="4" fill="#F5C9A0"/>
+      <!-- Dark embroidered blouse with collar -->
+      <path d="M42,78 Q60,72 78,78 L80,100 Q60,104 40,100 Z" fill="#1A3A2A"/>
+      <!-- Gold embroidery -->
+      <path d="M50,82 Q60,78 70,82" stroke="${bg}" stroke-width="2"/>
+      <path d="M46,90 Q60,86 74,90" stroke="#D4A830" stroke-width="1.2" opacity="0.8"/>
+      <!-- Dark pleated skirt -->
+      <path d="M40,98 Q60,92 80,98 L82,138 Q60,142 38,138 Z" fill="${bg}"/>
+      <!-- Zhuang brocade pattern -->
+      <path d="M44,106 Q54,102 60,106 Q66,102 76,106" stroke="#D4A830" stroke-width="1.5" fill="none"/>
+      <path d="M43,114 L77,114" stroke="#D4A830" stroke-width="1" opacity="0.6"/>
+      <!-- Bronze drum stick in hand -->
+      <line x1="78" y1="96" x2="92" y2="115" stroke="#6B4020" stroke-width="3" stroke-linecap="round"/>
+    </svg>`,
+    korean: `<svg viewBox="0 0 120 150" xmlns="http://www.w3.org/2000/svg">
+      <rect width="120" height="150" fill="${light}" opacity="0.5"/>
+      <!-- Wide Hanbok skirt - most distinctive Korean feature -->
+      <path d="M24,92 Q60,84 96,92 L100,142 Q60,148 20,142 Z" fill="#E8D0E8"/>
+      <!-- Skirt pattern -->
+      <path d="M26,100 Q60,94 94,100" stroke="white" stroke-width="1.5" opacity="0.6"/>
+      <path d="M24,110 Q60,104 96,110" stroke="white" stroke-width="1" opacity="0.4"/>
+      <!-- Ribbon bow at chest -->
+      <path d="M52,80 Q60,74 68,80 Q60,84 52,80 Z" fill="${bg}"/>
+      <circle cx="60" cy="80" r="3" fill="${bg}" opacity="0.8"/>
+      <path d="M52,80 Q44,76 40,80" stroke="${bg}" stroke-width="1.5" fill="none"/>
+      <path d="M68,80 Q76,76 80,80" stroke="${bg}" stroke-width="1.5" fill="none"/>
+      <!-- Short jeogori top -->
+      <path d="M46,64 Q60,58 74,64 L76,82 Q60,86 44,82 Z" fill="${bg}"/>
+      <!-- White collar -->
+      <path d="M54,64 Q60,60 66,64 L64,72 Q60,68 56,72 Z" fill="white"/>
+      <!-- Neck -->
+      <rect x="54" y="52" width="12" height="14" rx="4" fill="#F5C9A0"/>
+      <!-- Head -->
+      <ellipse cx="60" cy="42" rx="15" ry="17" fill="#F5C9A0"/>
+      <!-- Hair in bun with hairpin -->
+      <ellipse cx="60" cy="28" rx="13" ry="8" fill="#2D1810"/>
+      <ellipse cx="60" cy="24" rx="8" ry="5" fill="#2D1810"/>
+      <line x1="50" y1="24" x2="70" y2="24" stroke="#D4A830" stroke-width="2"/>
+      <circle cx="50" cy="24" r="3" fill="#D4A830"/>
+      <!-- Face -->
+      <ellipse cx="54" cy="42" rx="2" ry="2.5" fill="#2D1810" opacity="0.6"/>
+      <ellipse cx="66" cy="42" rx="2" ry="2.5" fill="#2D1810" opacity="0.6"/>
+      <path d="M56 49 Q60 52 64 49" stroke="#2D1810" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+      <!-- Long drum (장구) -->
+      <ellipse cx="20" cy="110" rx="8" ry="5" fill="${bg}" opacity="0.7"/>
+      <rect x="12" y="108" width="16" height="4" rx="2" fill="${bg}" opacity="0.7"/>
+      <ellipse cx="28" cy="110" rx="8" ry="5" fill="${bg}" opacity="0.6"/>
+      <line x1="20" y1="110" x2="28" y2="110" stroke="${bg}" stroke-width="8" opacity="0.4"/>
+    </svg>`,
+    uyghur: `<svg viewBox="0 0 120 150" xmlns="http://www.w3.org/2000/svg">
+      <rect width="120" height="150" fill="${light}" opacity="0.5"/>
+      <!-- Decorative background pattern hint -->
+      <circle cx="96" cy="20" r="30" fill="${bg}" opacity="0.08"/>
+      <!-- Doppa cap - most distinctive Uyghur feature -->
+      <path d="M44,38 Q60,20 76,38 L74,46 L46,46 Z" fill="${bg}"/>
+      <!-- Cap embroidery pattern (geometric) -->
+      <path d="M50,40 Q60,32 70,40" stroke="#FFD700" stroke-width="1.5" fill="none"/>
+      <circle cx="56" cy="36" r="2" fill="#FFD700"/>
+      <circle cx="60" cy="33" r="2" fill="white"/>
+      <circle cx="64" cy="36" r="2" fill="#FFD700"/>
+      <rect x="44" y="44" width="32" height="5" rx="2.5" fill="${bg}" opacity="0.9"/>
+      <!-- Head -->
+      <ellipse cx="60" cy="54" rx="15" ry="16" fill="#F0C880"/>
+      <!-- Face -->
+      <ellipse cx="54" cy="53" rx="2" ry="2.5" fill="#2D1810" opacity="0.7"/>
+      <ellipse cx="66" cy="53" rx="2" ry="2.5" fill="#2D1810" opacity="0.7"/>
+      <!-- Mustache -->
+      <path d="M55 61 Q60 63 65 61" stroke="#2D1810" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      <path d="M55,60 Q52,58 50,60" stroke="#2D1810" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      <path d="M65,60 Q68,58 70,60" stroke="#2D1810" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      <!-- Neck -->
+      <rect x="54" y="68" width="12" height="12" rx="4" fill="#F0C880"/>
+      <!-- Long robe with embroidered edges -->
+      <path d="M40,80 Q60,74 80,80 L82,130 Q60,136 38,130 Z" fill="${bg}"/>
+      <!-- Robe embroidery collar -->
+      <path d="M54,80 L54,90 L60,95 L66,90 L66,80" fill="${bg}" opacity="0.8" stroke="#FFD700" stroke-width="1.2"/>
+      <!-- Side embroidery -->
+      <path d="M44,88 Q40,100 44,112" stroke="#FFD700" stroke-width="1.5" fill="none" stroke-dasharray="3,3"/>
+      <path d="M76,88 Q80,100 76,112" stroke="#FFD700" stroke-width="1.5" fill="none" stroke-dasharray="3,3"/>
+      <!-- Belt -->
+      <rect x="44" y="100" width="32" height="6" rx="3" fill="#D4A830"/>
+      <!-- Dutar (2-string instrument) -->
+      <path d="M82,78 Q90,85 88,100 Q86,110 84,130" stroke="#8B6030" stroke-width="3" stroke-linecap="round" fill="none"/>
+      <ellipse cx="87" cy="100" rx="5" ry="8" fill="#A07040"/>
+      <line x1="84" y1="92" x2="92" y2="92" stroke="#D4A830" stroke-width="0.8"/>
+      <line x1="84" y1="96" x2="92" y2="96" stroke="#D4A830" stroke-width="0.8"/>
+    </svg>`,
+    tujia: `<svg viewBox="0 0 120 150" xmlns="http://www.w3.org/2000/svg">
+      <rect width="120" height="150" fill="${light}" opacity="0.5"/>
+      <!-- Stilted house (吊脚楼) in background -->
+      <rect x="5" y="70" width="40" height="35" fill="${bg}" opacity="0.18"/>
+      <path d="M0,70 Q25,55 50,70" fill="${bg}" opacity="0.15"/>
+      <!-- Stilt posts -->
+      <line x1="12" y1="105" x2="10" y2="130" stroke="${bg}" stroke-width="2.5" opacity="0.25"/>
+      <line x1="25" y1="105" x2="23" y2="130" stroke="${bg}" stroke-width="2.5" opacity="0.25"/>
+      <line x1="38" y1="105" x2="40" y2="130" stroke="${bg}" stroke-width="2.5" opacity="0.25"/>
+      <!-- Woven brocade top (西兰卡普 pattern) -->
+      <path d="M44,76 Q60,70 76,76 L78,100 Q60,104 42,100 Z" fill="${bg}"/>
+      <!-- Brocade cross-pattern -->
+      <path d="M48,80 L72,80" stroke="#FFD700" stroke-width="1.5"/>
+      <path d="M46,86 L74,86" stroke="#FFD700" stroke-width="1.2"/>
+      <path d="M60,76 L60,100" stroke="rgba(255,200,0,0.4)" stroke-width="1"/>
+      <!-- Diamond pattern on top -->
+      <path d="M56,82 L60,78 L64,82 L60,86 Z" fill="#FFD700" opacity="0.6"/>
+      <!-- Skirt with brocade -->
+      <path d="M42,98 Q60,92 78,98 L80,140 Q60,144 40,140 Z" fill="${bg}" opacity="0.8"/>
+      <!-- Skirt pattern bands -->
+      <path d="M44,106 L76,106" stroke="#D4A830" stroke-width="2"/>
+      <path d="M43,114 L77,114" stroke="#FFD700" stroke-width="1.5"/>
+      <path d="M42,122 L78,122" stroke="#D4A830" stroke-width="1"/>
+      <!-- Neck -->
+      <rect x="54" y="62" width="12" height="16" rx="4" fill="#F5C880"/>
+      <!-- Head -->
+      <ellipse cx="60" cy="52" rx="15" ry="17" fill="#F5C880"/>
+      <!-- Hair with wrapped cloth -->
+      <ellipse cx="60" cy="38" rx="18" ry="8" fill="#2D1810"/>
+      <rect x="42" y="36" width="36" height="6" rx="3" fill="${bg}" opacity="0.7"/>
+      <!-- Face -->
+      <ellipse cx="54" cy="52" rx="2" ry="2.5" fill="#2D1810" opacity="0.6"/>
+      <ellipse cx="66" cy="52" rx="2" ry="2.5" fill="#2D1810" opacity="0.6"/>
+      <path d="M56 59 Q60 62 64 59" stroke="#2D1810" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+    </svg>`,
+    naxi: `<svg viewBox="0 0 120 150" xmlns="http://www.w3.org/2000/svg">
+      <rect width="120" height="150" fill="${light}" opacity="0.5"/>
+      <!-- Stars and moon background for 披星戴月 motif -->
+      <circle cx="20" cy="20" r="4" fill="#D4A830" opacity="0.4"/>
+      <circle cx="100" cy="15" r="3" fill="#D4A830" opacity="0.35"/>
+      <circle cx="15" cy="55" r="2" fill="#D4A830" opacity="0.3"/>
+      <path d="M95 30 Q100 20 105 30 Q100 26 95 30 Z" fill="#D4A830" opacity="0.3"/>
+      <!-- Cape with star-moon embroidery (披星戴月) -->
+      <path d="M30,72 Q60,62 90,72 L94,128 Q60,136 26,128 Z" fill="#1A1A2A"/>
+      <!-- Seven stars on cape shoulders -->
+      <circle cx="38" cy="78" r="5" fill="#D4A830" opacity="0.9"/>
+      <circle cx="52" cy="74" r="5" fill="#D4A830" opacity="0.9"/>
+      <circle cx="68" cy="74" r="5" fill="#D4A830" opacity="0.9"/>
+      <circle cx="82" cy="78" r="5" fill="#D4A830" opacity="0.9"/>
+      <circle cx="44" cy="88" r="4" fill="#D4A830" opacity="0.8"/>
+      <circle cx="60" cy="86" r="4" fill="#D4A830" opacity="0.8"/>
+      <circle cx="76" cy="88" r="4" fill="#D4A830" opacity="0.8"/>
+      <!-- Sun and moon on back (shown on front for illustration) -->
+      <circle cx="48" cy="106" r="10" fill="#E8A820" opacity="0.8"/>
+      <path d="M70,106 Q76,96 82,106 Q76,100 70,106 Z" fill="white" opacity="0.8"/>
+      <!-- Inner garment blue -->
+      <rect x="52" y="70" width="16" height="28" fill="#2A4A8A" opacity="0.8"/>
+      <!-- Neck -->
+      <rect x="54" y="58" width="12" height="14" rx="4" fill="#F0C880"/>
+      <!-- Head -->
+      <ellipse cx="60" cy="48" rx="15" ry="17" fill="#F0C880"/>
+      <!-- Hair with sheepskin hat hint -->
+      <ellipse cx="60" cy="34" rx="16" ry="8" fill="#2D1810"/>
+      <path d="M44,34 Q60,24 76,34" fill="#4A3020" opacity="0.7"/>
+      <!-- Face -->
+      <ellipse cx="54" cy="48" rx="2" ry="2.5" fill="#2D1810" opacity="0.6"/>
+      <ellipse cx="66" cy="48" rx="2" ry="2.5" fill="#2D1810" opacity="0.6"/>
+      <path d="M56 55 Q60 58 64 55" stroke="#2D1810" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+    </svg>`
+  };
+  return icons[id] || `<svg viewBox="0 0 120 150"><rect width="120" height="150" fill="${light}" opacity="0.4"/><text x="60" y="80" text-anchor="middle" font-size="40">${bg}</text></svg>`;
+}
+
+// =============================
+// QUIZ DATA (30 questions)
+// =============================
+const QUIZ_DATA = [
+  { q: "傣族最重要的传统节日是？", opts: ["火把节","泼水节","那达慕","芦笙节"], ans: 1, cat: "festival", expl: "泼水节是傣族最重要的传统节日，通常在公历四月中旬举行，人们互相泼水祈福，象征洗去旧年晦气、迎接新年吉祥，也是傣族新年庆典。" },
+  { q: "蒙古族最具代表性的弦乐器，因琴头雕有动物头像而得名的是？", opts: ["马头琴","二胡","琵琶","芦笙"], ans: 0, cat: "ethnic", expl: "马头琴（Morin Khuur）是蒙古族最具代表性的乐器，因琴头雕有马头而得名。音色浑厚悠扬，能模拟马匹嘶鸣与风声，已列入联合国非物质文化遗产名录。" },
+  { q: "彝族最盛大的传统节日被称为什么，有"东方狂欢节"之称？", opts: ["泼水节","火把节","雪顿节","那达慕"], ans: 1, cat: "festival", expl: "火把节是彝族最盛大的传统节日，每年农历六月二十四日举行，被称为"东方的狂欢节"，人们手持火把游行，举行摔跤、赛马、斗牛等活动。" },
+  { q: "藏族最具代表性的绘画艺术形式是？", opts: ["水墨画","唐卡","壁画","剪纸"], ans: 1, cat: "heritage", expl: "唐卡（Thangka）是藏族文化中最具代表性的绘画艺术，绘于丝绢或纸张上，颜料取自矿物质与植物，历经千年不褪色，已列为国家级非物质文化遗产。" },
+  { q: "苗族盛装中最具特色的装饰品是？", opts: ["翡翠项链","苗族银饰","珊瑚手链","骨制饰品"], ans: 1, cat: "ethnic", expl: "苗族银饰是中国少数民族中最华美的装饰艺术之一，盛装时一套完整银饰重达十余斤，已列为国家级非物质文化遗产，是苗族文化认同的重要象征。" },
+  { q: "蒙古族盛大传统节日，包含摔跤、赛马、射箭三大竞技的是？", opts: ["火把节","花儿节","那达慕","泼水节"], ans: 2, cat: "festival", expl: "那达慕是蒙古族最盛大的传统节日，包含摔跤、赛马、射箭三大传统竞技项目，统称"男儿三艺"，是祭祀、社交与娱乐的综合盛会，已传承数百年。" },
+  { q: "藏族传统圆形居所，拆装便捷、适应游牧生活的是什么？", opts: ["四合院","蒙古包","吊脚楼","土楼"], ans: 1, cat: "ethnic", expl: "蒙古包是蒙古族传统居所，圆形穹顶结构，拆装便捷，适应游牧生活。门朝南开，内部布置讲究方位秩序，是草原文明的智慧结晶。" },
+  { q: "壮族特有的传统手工艺织物是？", opts: ["苗绣","蜀锦","壮锦","刺绣"], ans: 2, cat: "heritage", expl: "壮锦是壮族传统手工艺品，以棉纱为经，丝线为纬，图案多为动物、植物和几何纹样，色彩艳丽，工艺精湛，已列为国家非物质文化遗产。" },
+  { q: "傣族最具代表性的民族舞蹈是？", opts: ["摆手舞","孔雀舞","芦笙舞","长鼓舞"], ans: 1, cat: "ethnic", expl: "孔雀舞是傣族最具代表性的民族舞蹈，以优美舞姿模仿孔雀各种形态，舞者身着华丽孔雀尾饰，动作轻盈，2008年被列为国家级非物质文化遗产。" },
+  { q: "纳西族最具代表性的文字系统是？", opts: ["甲骨文","东巴文","彝文","女书"], ans: 1, cat: "heritage", expl: "东巴文是纳西族特有的象形文字体系，是目前世界上唯一仍在使用的活着的象形文字，相关典籍已被列入联合国教科文组织世界记忆名录。" },
+  { q: "苗族传统手工艺中，以蜂蜡绘制图案再染色的工艺叫什么？", opts: ["扎染","蜡染","刺绣","织锦"], ans: 1, cat: "heritage", expl: "苗族蜡染是以蜂蜡在布料上绘制图案，经染色后去蜡显出白色花纹的传统工艺，历史已超过两千年，已被列为国家非遗保护项目。" },
+  { q: "彝族特有的文字体系，现行规范字符约多少个？", opts: ["300多个","819个","5000多个","10000多个"], ans: 1, cat: "history", expl: "彝文是彝族独有的文字体系，约有10000多个字符，现行规范彝文819个，是中国少数民族中为数不多保留完整文字的民族。" },
+  { q: "朝鲜族最具代表性的民族舞蹈是？", opts: ["孔雀舞","芦笙舞","长鼓舞","摆手舞"], ans: 2, cat: "ethnic", expl: "长鼓舞是朝鲜族最具代表性的民族舞蹈，舞者身着传统服装击打长鼓，舞姿优美，节奏欢快，已被列为国家级非物质文化遗产。" },
+  { q: "泼水节是哪个民族的重要节日？", opts: ["苗族","傣族","蒙古族","回族"], ans: 1, cat: "festival", expl: "泼水节是傣族最重要的传统节日，象征洗去旧年的晦气，迎接新年的幸福与吉祥。通常在每年公历四月中旬举行，历时3-4天。" },
+  { q: "维吾尔族集民间歌曲、舞蹈、器乐于一体，被誉为"维吾尔音乐之母"的是？", opts: ["马头琴协奏","十二木卡姆","麦西来甫","那达慕音乐"], ans: 1, cat: "heritage", expl: "十二木卡姆是维吾尔族最具代表性的音乐体裁，规模宏大，内容丰富，被誉为"维吾尔音乐之母"，已列入联合国非物质文化遗产代表作名录。" },
+  { q: "纳西族女性服饰被称为什么，寓意勤劳勇敢精神？", opts: ["凤凰装","披星戴月","七彩盛装","百褶长裙"], ans: 1, cat: "ethnic", expl: "纳西族女性服饰有"披星戴月"之称，上衣缀有七颗圆形饰物象征七星，背部缝有两个圆形刺绣代表日月，寓意"肩负日月、背负星辰"。" },
+  { q: "苗族传统舞蹈中，以同名乐器伴奏的节日集体舞蹈是？", opts: ["孔雀舞","芦笙舞","长鼓舞","摆手舞"], ans: 1, cat: "ethnic", expl: "芦笙舞是苗族最具代表性的传统舞蹈，以芦笙伴奏，边吹边舞，动作刚健优美。苗族芦笙节期间数千人同场共舞，场面壮观，已入选国家非遗名录。" },
+  { q: "壮族每年农历三月三节日最具代表性的传统活动是？", opts: ["赛龙舟","对山歌（歌圩）","摔跤","火把游行"], ans: 1, cat: "festival", expl: "农历三月三歌节，壮族青年男女通过歌圩（对歌）表达情感，互赠彩蛋与绣球，对山歌是壮族文化中最具代表性的艺术形式。" },
+  { q: "土家族依山而建、部分柱子悬空支撑的传统民居是？", opts: ["四合院","蒙古包","吊脚楼","土楼"], ans: 2, cat: "history", expl: "吊脚楼是土家族传统民居，依山而建，部分柱子悬空支撑，上层住人、下层养牲畜，是土家族先民与自然和谐共处的智慧体现。" },
+  { q: "藏族喉音唱法（多声部唱法）已被联合国教科文组织列入哪一类遗产？", opts: ["世界自然遗产","世界文化遗产","非物质文化遗产","世界记忆名录"], ans: 2, cat: "heritage", expl: "藏族传统音乐以喉音唱法著称，这种独特发声方式称为"多声部唱法"，已被列入联合国教科文组织非物质文化遗产名录。" },
+  { q: "中国人口最多的少数民族是？", opts: ["苗族","彝族","壮族","蒙古族"], ans: 2, cat: "history", expl: "壮族是中国人口最多的少数民族，约有1700余万人，主要分布在广西壮族自治区，以壮锦、铜鼓、花山壁画等著名。" },
+  { q: "朝鲜族最著名的民歌，已传唱数百年、具有重要文化认同意义的是？", opts: ["阿里郎","茉莉花","嘎达梅林","弥渡山歌"], ans: 0, cat: "ethnic", expl: "阿里郎是朝鲜族最著名的民歌，旋律优美，情感丰富，已传唱数百年，具有重要的民族文化认同意义，以其命名的民谣、舞蹈、音乐贯穿朝鲜族文化。" },
+  { q: "东巴文相关典籍被收录进联合国教科文组织的什么名录？", opts: ["世界遗产名录","世界记忆名录","非遗代表作名录","人与生物圈名录"], ans: 1, cat: "heritage", expl: "纳西族东巴文相关典籍已被列入联合国教科文组织世界记忆名录，是人类文明珍贵的文化记忆，也是象形文字保存最完整的体系之一。" },
+  { q: "壮族最具代表性的打击乐器和权力象征是？", opts: ["编钟","铜鼓","锣","大鼓"], ans: 1, cat: "ethnic", expl: "铜鼓是壮族最具代表性的传统乐器，也是权力与财富的象征，制作历史超过2000年，鼓面纹饰精美，蕴含丰富文化内涵。" },
+  { q: "土家族最著名的手工织锦艺术是？", opts: ["蜀锦","苗绣","西兰卡普","壮锦"], ans: 2, cat: "heritage", expl: "西兰卡普是土家族传统手工织锦，色彩鲜艳，图案精美，是土家族女性必备的嫁妆和重要礼物，制作技艺已被列为国家级非物质文化遗产。" },
+  { q: "维吾尔族男性最具代表性的传统帽子叫什么？", opts: ["毡帽","多帕（多巴）","礼帽","皮帽"], ans: 1, cat: "ethnic", expl: "多帕是维吾尔族男性重要的文化标志，是绣花小帽，图案各地不同，传达丰富的文化信息，是维吾尔族服饰文化的核心元素。" },
+  { q: "苗族被称为"无字史书"，其历史主要通过什么载体传承？", opts: ["口头说唱","石刻铭文","服饰图案","竹简文字"], ans: 2, cat: "history", expl: "苗族有"无字史书"之称，历史记录全靠服饰图案传承。苗族盛装集刺绣、银饰、蜡染于一体，一套传统盛装往往需要数年甚至数十年才能完成。" },
+  { q: "纳西古乐被誉为什么？", opts: ["天籁之音","音乐活化石","草原之歌","高原绝唱"], ans: 1, cat: "heritage", expl: "纳西古乐是流传于丽江的一种古典音乐形式，融合了汉族、藏族和纳西族的音乐元素，保留了大量唐宋时代的古老乐章，被誉为"音乐活化石"。" },
+  { q: "土家族最具代表性的传统舞蹈，参与人数众多的是？", opts: ["芦笙舞","孔雀舞","摆手舞","长鼓舞"], ans: 2, cat: "ethnic", expl: "摆手舞是土家族最具代表性的传统舞蹈，参与人数众多，动作古朴刚健，反映土家族的生产生活与历史故事，每年农历正月举行大型活动。" },
+  { q: "壮族著名的崖壁画，2016年被列入世界遗产名录的是？", opts: ["敦煌壁画","花山壁画","龙门石窟","云冈石窟"], ans: 1, cat: "history", expl: "花山壁画位于广西宁明，是世界最大的崖壁画群，绘制时间可追溯至战国至东汉时期，2016年被列入世界遗产名录，记录了古代壮族先民的生活场景。" }
+];
+
+// =============================
+// STATE
+// =============================
+let currentUser = null;
+let quizState = {
+  questions: [], current: 0, score: 0,
+  correct: 0, wrong: 0, difficulty: 'easy',
+  startTime: null, timer: null,
+  timeLeft: 30, answered: false
+};
+let musicPlaying = false;
+let audioContext = null;
+let musicNodes = [];
+const MUSIC_TRACKS = [
+  { name: '草原牧歌', notes: [392,440,494,523,494,440,392,349,330,392] },
+  { name: '彝家山歌', notes: [330,370,415,440,415,370,330,294,262,330] },
+  { name: '傣家水韵', notes: [523,587,659,698,659,587,523,466,440,523] },
+  { name: '苗岭晨曲', notes: [262,294,330,349,330,294,262,247,220,262] }
+];
+let currentTrack = 0, musicScheduler = null;
+
+// =============================
+// LOCAL STORAGE
+// =============================
+function saveUsers(u) { localStorage.setItem('minzu_users', JSON.stringify(u)); }
+function getUsers() { return JSON.parse(localStorage.getItem('minzu_users') || '{}'); }
+function saveScores(s) { localStorage.setItem('minzu_scores', JSON.stringify(s)); }
+function getScores() { return JSON.parse(localStorage.getItem('minzu_scores') || '[]'); }
+function saveUserStats(name, stats) {
+  const all = JSON.parse(localStorage.getItem('minzu_stats') || '{}');
+  all[name] = stats; localStorage.setItem('minzu_stats', JSON.stringify(all));
+}
+function getUserStats(name) {
+  const all = JSON.parse(localStorage.getItem('minzu_stats') || '{}');
+  return all[name] || { totalQuizzes:0, totalCorrect:0, totalQuestions:0, bestScore:0, readArticles:[] };
+}
+
+// =============================
+// PAGE NAVIGATION
+// =============================
+function showPage(id, tab) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  if (id === 'page-auth' && tab === 'register') switchAuthTab('register');
+}
+
+// =============================
+// AUTH
+// =============================
+function switchAuthTab(tab) {
+  document.getElementById('authTabLogin').classList.toggle('active', tab==='login');
+  document.getElementById('authTabReg').classList.toggle('active', tab==='register');
+  document.getElementById('formLogin').style.display = tab==='login' ? '' : 'none';
+  document.getElementById('formReg').style.display = tab==='register' ? '' : 'none';
+  document.getElementById('errBox').style.display = 'none';
+}
+
+function showErr(msg) {
+  const el = document.getElementById('errBox');
+  el.textContent = msg; el.style.display = 'block';
+}
+
+function doLogin() {
+  const user = document.getElementById('loginUser').value.trim();
+  const pass = document.getElementById('loginPass').value;
+  if (!user || !pass) { showErr('请填写用户名和密码'); return; }
+  const users = getUsers();
+  if (!users[user]) { showErr('用户不存在，请先注册'); return; }
+  if (users[user].password !== btoa(pass)) { showErr('密码错误，请重新输入'); return; }
+  loginSuccess(user);
+}
+
+function doRegister() {
+  const user = document.getElementById('regUser').value.trim();
+  const pass = document.getElementById('regPass').value;
+  const pass2 = document.getElementById('regPass2').value;
+  if (!user || user.length < 2 || user.length > 10) { showErr('用户名需为2-10个字符'); return; }
+  if (pass.length < 6) { showErr('密码至少需要6位'); return; }
+  if (pass !== pass2) { showErr('两次输入的密码不一致'); return; }
+  const users = getUsers();
+  if (users[user]) { showErr('该用户名已存在，请换一个'); return; }
+  users[user] = { password: btoa(pass), createdAt: Date.now() };
+  saveUsers(users);
+  showToast('✅ 注册成功，欢迎加入！');
+  switchAuthTab('login');
+}
+
+function loginSuccess(username) {
+  currentUser = username;
+  document.getElementById('topUser').textContent = '🌸 ' + username;
+  updateUserLevel();
+  showPage('page-main');
+  switchMainTab('learn');
+}
+
+function doLogout() {
+  currentUser = null;
+  showPage('page-home');
+  showToast('已退出登录');
+}
+
+function changePassword() {
+  const np = document.getElementById('newPass').value;
+  const np2 = document.getElementById('newPass2').value;
+  if (np.length < 6) { showToast('⚠️ 新密码至少6位'); return; }
+  if (np !== np2) { showToast('⚠️ 两次密码不一致'); return; }
+  const users = getUsers();
+  users[currentUser].password = btoa(np);
+  saveUsers(users);
+  document.getElementById('newPass').value = '';
+  document.getElementById('newPass2').value = '';
+  showToast('✅ 密码修改成功！');
+}
+
+// =============================
+// MAIN NAV
+// =============================
+function switchMainTab(tab) {
+  const tabs = ['learn','quiz','board','profile','about'];
+  tabs.forEach(t => {
+    document.getElementById('tab' + t.charAt(0).toUpperCase() + t.slice(1)).style.display = t === tab ? 'block' : 'none';
+    const navEl = document.getElementById('nav' + t.charAt(0).toUpperCase() + t.slice(1));
+    if (navEl) navEl.classList.toggle('active', t === tab);
+  });
+  if (tab === 'board') renderBoard();
+  if (tab === 'profile') renderProfile();
+  if (tab === 'quiz') resetQuizView();
+  // Update quiz sidebar active state
+  document.querySelectorAll('.quiz-cat-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('catAnswering').classList.add('active');
+}
+
+function updateUserLevel() {
+  const stats = getUserStats(currentUser);
+  let level = '初学者';
+  if (stats.bestScore >= 90) level = '文化大师 🌟';
+  else if (stats.bestScore >= 70) level = '文化达人 ⭐';
+  else if (stats.bestScore >= 50) level = '文化学者 📚';
+  else if (stats.totalQuizzes > 0) level = '文化探索者 🔍';
+  document.getElementById('userLevelBadge').textContent = level;
+}
+
+function sidebarCat(cat) {
+  document.querySelectorAll('.quiz-cat-btn').forEach(b => b.classList.remove('active'));
+  const el = document.getElementById('cat' + cat.charAt(0).toUpperCase() + cat.slice(1));
+  if (el) el.classList.add('active');
+  if (cat !== 'answering') {
+    // Show info about the category
+    const catNames = { history:'历史文化', ethnic:'民族文化', festival:'传统节日', heritage:'非遗文化', poetry:'诗词文化' };
+    showToast('📂 ' + (catNames[cat] || cat) + ' 题目将在下次答题中筛选');
+  }
+}
+
+// =============================
+// LEARN MODULE
+// =============================
+function initLearnGrid() {
+  const grid = document.getElementById('learnGrid');
+  const readArticles = JSON.parse(localStorage.getItem('minzu_read_' + currentUser) || '[]');
+  grid.innerHTML = KNOWLEDGE_BASE.map((item, i) => {
+    const isRead = readArticles.includes(item.id);
+    const svgIcon = getEthnicIcon(item.id, item.color);
+    return `
+    <div class="card learn-card" onclick="openDetail('${item.id}')" style="animation:pageIn 0.4s ${i * 0.06}s ease both">
+      <div class="learn-card-top" style="background:linear-gradient(135deg,${item.color[1]},#fff)">
+        ${svgIcon}
+      </div>
+      <div class="learn-card-body">
+        <span class="learn-card-tag">${item.tag}</span>
+        <div class="learn-card-title">${item.name}</div>
+        <div class="learn-card-desc">${item.desc}</div>
+        ${isRead ? '<div class="read-badge"><svg width="12" height="12" viewBox="0 0 12 12"><circle cx="6" cy="6" r="5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M3 6 L5 8 L9 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg> 已阅读</div>' : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openDetail(id) {
+  const item = KNOWLEDGE_BASE.find(k => k.id === id);
+  if (!item) return;
+  document.getElementById('learnListView').style.display = 'none';
+  document.getElementById('learnDetailView').style.display = 'block';
+  document.getElementById('detailBody').innerHTML = `
+    <div style="display:flex;align-items:center;gap:16px;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid var(--border);">
+      <div style="width:80px;height:80px;border-radius:12px;overflow:hidden;background:linear-gradient(135deg,${item.color[1]},#fff);flex-shrink:0">${getEthnicIcon(item.id, item.color)}</div>
+      <div>
+        <div class="learn-card-tag">${item.tag}</div>
+        <div style="font-family:'Ma Shan Zheng',cursive;font-size:1.5rem;color:var(--red);letter-spacing:4px;margin-top:6px;">${item.name}</div>
+      </div>
+    </div>
+    ${item.detail}
+  `;
+  // Mark as read
+  const key = 'minzu_read_' + currentUser;
+  const read = JSON.parse(localStorage.getItem(key) || '[]');
+  if (!read.includes(id)) {
+    read.push(id);
+    localStorage.setItem(key, JSON.stringify(read));
+    // Update stats
+    const stats = getUserStats(currentUser);
+    stats.readArticles = read;
+    saveUserStats(currentUser, stats);
+    checkAchievements();
+  }
+  window.scrollTo(0,0);
+}
+
+function closeDetail() {
+  document.getElementById('learnDetailView').style.display = 'none';
+  document.getElementById('learnListView').style.display = 'block';
+  initLearnGrid(); // refresh to show read badges
+}
+
+// =============================
+// QUIZ MODULE
+// =============================
+function selectDiff(d) {
+  quizState.difficulty = d;
+  ['easy','medium','hard'].forEach(x => {
+    document.getElementById('diff' + x.charAt(0).toUpperCase() + x.slice(1)).classList.toggle('selected', x === d);
+  });
+}
+
+function startQuiz() {
+  const pool = [...QUIZ_DATA].sort(() => Math.random() - 0.5).slice(0, 10);
+  quizState = { questions: pool, current: 0, score: 0, correct: 0, wrong: 0,
+    difficulty: quizState.difficulty, startTime: Date.now(),
+    timer: null, timeLeft: getTimeLimit(), answered: false };
+  document.getElementById('quizStartScreen').style.display = 'none';
+  document.getElementById('quizActiveScreen').style.display = 'block';
+  document.getElementById('quizResultScreen').style.display = 'none';
+  renderQuestion();
+}
+
+function getTimeLimit() {
+  return { easy: 40, medium: 30, hard: 20 }[quizState.difficulty] || 30;
+}
+
+function renderQuestion() {
+  const q = quizState.questions[quizState.current];
+  const total = quizState.questions.length;
+  const num = quizState.current + 1;
+  quizState.answered = false;
+  document.getElementById('quizProgressText').textContent = `第 ${num} / ${total} 题`;
+  document.getElementById('qNumTag').textContent = `第 ${num} 题`;
+  document.getElementById('quizScore').textContent = quizState.score;
+  document.getElementById('quizProgressBar').style.width = ((num - 1) / total * 100) + '%';
+  document.getElementById('qText').textContent = q.q;
+  document.getElementById('qExplanation').classList.remove('show');
+  document.getElementById('btnNext').classList.add('hidden');
+  const letters = ['A','B','C','D'];
+  document.getElementById('qOptions').innerHTML = q.opts.map((o, i) => `
+    <button class="opt-btn" onclick="selectAnswer(${i})">
+      <span class="opt-letter">${letters[i]}</span>
+      <span>${o}</span>
+    </button>`).join('');
+  startTimer();
+}
+
+function startTimer() {
+  clearInterval(quizState.timer);
+  quizState.timeLeft = getTimeLimit();
+  const el = document.getElementById('quizTimer');
+  el.textContent = quizState.timeLeft;
+  el.classList.remove('urgent');
+  quizState.timer = setInterval(() => {
+    quizState.timeLeft--;
+    el.textContent = quizState.timeLeft;
+    if (quizState.timeLeft <= 8) el.classList.add('urgent');
+    if (quizState.timeLeft <= 0) {
+      clearInterval(quizState.timer);
+      if (!quizState.answered) autoTimeout();
+    }
+  }, 1000);
+}
+
+function autoTimeout() {
+  quizState.answered = true;
+  quizState.wrong++;
+  const q = quizState.questions[quizState.current];
+  const btns = document.querySelectorAll('.opt-btn');
+  btns.forEach((b, i) => {
+    b.disabled = true;
+    if (i === q.ans) b.classList.add('correct');
+  });
+  document.getElementById('qExplText').textContent = '⏰ 超时！' + q.expl;
+  document.getElementById('qExplanation').classList.add('show');
+  document.getElementById('btnNext').classList.remove('hidden');
+}
+
+function selectAnswer(idx) {
+  if (quizState.answered) return;
+  quizState.answered = true;
+  clearInterval(quizState.timer);
+  const q = quizState.questions[quizState.current];
+  const btns = document.querySelectorAll('.opt-btn');
+  btns.forEach((b, i) => {
+    b.disabled = true;
+    if (i === q.ans) b.classList.add('correct');
+    else if (i === idx && idx !== q.ans) b.classList.add('wrong');
+  });
+  if (idx === q.ans) {
+    quizState.correct++;
+    quizState.score += 10;
+    document.getElementById('quizScore').textContent = quizState.score;
+  } else {
+    quizState.wrong++;
+    document.getElementById('qExplText').textContent = q.expl;
+    document.getElementById('qExplanation').classList.add('show');
+  }
+  document.getElementById('btnNext').classList.remove('hidden');
+}
+
+function nextQuestion() {
+  quizState.current++;
+  if (quizState.current >= quizState.questions.length) {
+    finishQuiz();
+  } else {
+    renderQuestion();
+  }
+}
+
+function finishQuiz() {
+  clearInterval(quizState.timer);
+  const timeUsed = Math.round((Date.now() - quizState.startTime) / 1000);
+  const score = quizState.score;
+  document.getElementById('quizActiveScreen').style.display = 'none';
+  const res = document.getElementById('quizResultScreen');
+  res.style.display = 'block';
+  document.getElementById('resultScore').textContent = score;
+  const stars = score >= 90 ? '★★★★★' : score >= 70 ? '★★★★☆' : score >= 50 ? '★★★☆☆' : score >= 30 ? '★★☆☆☆' : '★☆☆☆☆';
+  document.getElementById('resultStars').textContent = stars;
+  let grade, msg, trophy;
+  if (score >= 90) { grade = '文化大师 🌟'; msg = '太棒了！您对中华民族文化了解深厚，继续保持，做中华文化的传承者！'; trophy = '🏆'; }
+  else if (score >= 70) { grade = '文化达人 ⭐'; msg = '表现不错！对民族文化有相当了解，再接再厉，向文化大师进发！'; trophy = '🥇'; }
+  else if (score >= 50) { grade = '文化学者 📚'; msg = '基础扎实，继续探索民族知识库，相信你能取得更好成绩！'; trophy = '🎖️'; }
+  else { grade = '文化探索者 🔍'; msg = '加油！多阅读民族知识库，相信下次一定会有所进步！'; trophy = '💪'; }
+  document.getElementById('resultTrophy').textContent = trophy;
+  document.getElementById('resultGrade').textContent = grade;
+  document.getElementById('resultMsg').textContent = msg;
+  document.getElementById('statCorrect').textContent = quizState.correct;
+  document.getElementById('statWrong').textContent = quizState.wrong;
+  document.getElementById('statTime').textContent = timeUsed + 's';
+  // Knowledge tip
+  const lastWrong = quizState.questions.find((q, i) => {
+    // find first wrong one we can't easily track, show last q's expl
+    return true;
+  });
+  if (lastWrong) {
+    document.getElementById('rkText').textContent = lastWrong.expl;
+    document.getElementById('resultKnowledge').style.display = 'block';
+  }
+  if (score >= 70) { spawnConfetti(); playVictorySound(); }
+  // Save
+  const scores = getScores();
+  scores.push({ name: currentUser, score, date: new Date().toLocaleDateString('zh-CN'), ts: Date.now() });
+  saveScores(scores);
+  const stats = getUserStats(currentUser);
+  stats.totalQuizzes = (stats.totalQuizzes || 0) + 1;
+  stats.totalCorrect = (stats.totalCorrect || 0) + quizState.correct;
+  stats.totalQuestions = (stats.totalQuestions || 0) + quizState.questions.length;
+  stats.bestScore = Math.max(stats.bestScore || 0, score);
+  saveUserStats(currentUser, stats);
+  updateUserLevel();
+  checkAchievements();
+}
+
+function restartQuiz() {
+  resetQuizView();
+}
+
+function resetQuizView() {
+  clearInterval(quizState.timer);
+  document.getElementById('quizStartScreen').style.display = 'block';
+  document.getElementById('quizActiveScreen').style.display = 'none';
+  document.getElementById('quizResultScreen').style.display = 'none';
+}
+
+// =============================
+// LEADERBOARD
+// =============================
+const medals = ['🥇','🥈','🥉'];
+function renderBoard(filter) {
+  let scores = getScores().sort((a,b) => b.score - a.score || b.ts - a.ts);
+  const stats = getUserStats(currentUser);
+  document.getElementById('bpScore').textContent = (stats.bestScore || 0) + '分';
+  document.getElementById('bpName').textContent = currentUser;
+  if (filter === 'mine') scores = scores.filter(s => s.name === currentUser);
+  else if (filter === 'top10') scores = scores.slice(0, 10);
+  const list = document.getElementById('boardList');
+  if (!scores.length) {
+    list.innerHTML = '<li class="board-empty">暂无记录，快去答题吧！🎯</li>';
+    return;
+  }
+  list.innerHTML = scores.map((s, i) => `
+    <li class="board-item" style="animation-delay:${i * 0.05}s">
+      <span class="board-rank">${i < 3 ? medals[i] : (i + 1)}</span>
+      <span class="board-name">${s.name}${s.name === currentUser ? ' <span style="color:var(--jade);font-size:0.72rem;">（我）</span>' : ''}</span>
+      <span class="board-score">${s.score}分</span>
+      <span class="board-date">${s.date}</span>
+    </li>`).join('');
+}
+function filterBoard(f) { renderBoard(f); }
+
+// =============================
+// PROFILE
+// =============================
+function renderProfile() {
+  if (!currentUser) return;
+  const stats = getUserStats(currentUser);
+  document.getElementById('profileName').textContent = currentUser;
+  document.getElementById('profileAvatar').textContent = currentUser[0].toUpperCase();
+  const acc = stats.totalQuestions > 0 ? Math.round(stats.totalCorrect / stats.totalQuestions * 100) : 0;
+  document.getElementById('stTotal').textContent = stats.totalQuizzes || 0;
+  document.getElementById('stBest').textContent = (stats.bestScore || 0) + '分';
+  document.getElementById('stAccuracy').textContent = acc + '%';
+  document.getElementById('stRead').textContent = (stats.readArticles || []).length;
+  let badge = '初学者';
+  if (stats.bestScore >= 90) badge = '文化大师 🌟';
+  else if (stats.bestScore >= 70) badge = '文化达人 ⭐';
+  else if (stats.bestScore >= 50) badge = '文化学者 📚';
+  else if (stats.totalQuizzes > 0) badge = '文化探索者 🔍';
+  document.getElementById('profileBadge').textContent = badge;
+  renderAchievements(stats);
+}
+
+// =============================
+// ACHIEVEMENTS
+// =============================
+const ACHIEVEMENTS = [
+  { id:'first_quiz', icon:'🎯', name:'初次挑战', desc:'完成第一次答题' },
+  { id:'score_50', icon:'📚', name:'文化学者', desc:'单次得分达到50分' },
+  { id:'score_70', icon:'⭐', name:'文化达人', desc:'单次得分达到70分' },
+  { id:'score_100', icon:'🏆', name:'满分状元', desc:'单次满分100分' },
+  { id:'read_5', icon:'🌺', name:'博览群书', desc:'阅读5篇民族知识' },
+  { id:'read_all', icon:'🐉', name:'通晓民族', desc:'阅读全部10篇知识' },
+  { id:'quiz_5', icon:'💎', name:'勤学苦练', desc:'累计完成5次答题' },
+];
+
+function checkAchievements() {
+  if (!currentUser) return;
+  const stats = getUserStats(currentUser);
+  const key = 'minzu_ach_' + currentUser;
+  const earned = JSON.parse(localStorage.getItem(key) || '[]');
+  const check = (id, cond) => {
+    if (cond && !earned.includes(id)) {
+      earned.push(id);
+      localStorage.setItem(key, JSON.stringify(earned));
+      const ach = ACHIEVEMENTS.find(a => a.id === id);
+      if (ach) showAchievement(ach);
+    }
+  };
+  check('first_quiz', stats.totalQuizzes >= 1);
+  check('score_50', stats.bestScore >= 50);
+  check('score_70', stats.bestScore >= 70);
+  check('score_100', stats.bestScore >= 100);
+  check('read_5', (stats.readArticles||[]).length >= 5);
+  check('read_all', (stats.readArticles||[]).length >= 10);
+  check('quiz_5', stats.totalQuizzes >= 5);
+}
+
+function renderAchievements(stats) {
+  if (!currentUser) return;
+  const earned = JSON.parse(localStorage.getItem('minzu_ach_' + currentUser) || '[]');
+  document.getElementById('achievementList').innerHTML = ACHIEVEMENTS.map(a => `
+    <div class="ach-item ${earned.includes(a.id) ? 'earned' : ''}">
+      <span class="ach-emoji">${a.icon}</span>
+      <span class="ach-name">${a.name}</span>
+      <span class="ach-desc">${a.desc}</span>
+    </div>`).join('');
+}
+
+function showAchievement(ach) {
+  document.getElementById('achPopIcon').textContent = ach.icon;
+  document.getElementById('achPopTitle').textContent = ach.name + ' 解锁！';
+  document.getElementById('achPopDesc').textContent = ach.desc;
+  const pop = document.getElementById('achPopup');
+  pop.classList.add('show');
+  setTimeout(() => pop.classList.remove('show'), 3500);
+}
+
+// =============================
+// TOAST
+// =============================
+function showToast(msg) {
+  const t = document.getElementById('toastBar');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(t._t); t._t = setTimeout(() => t.classList.remove('show'), 2600);
+}
+
+// =============================
+// CONFETTI
+// =============================
+function spawnConfetti() {
+  const colors = ['#C8291F','#E8A820','#2A7A62','#D4A830','#FF6B6B','#4ECCB5'];
+  for (let i = 0; i < 55; i++) {
+    const el = document.createElement('div');
+    el.className = 'confetti-piece';
+    el.style.left = Math.random() * 100 + 'vw';
+    el.style.background = colors[Math.floor(Math.random() * colors.length)];
+    el.style.animationDuration = (1.5 + Math.random() * 2) + 's';
+    el.style.animationDelay = Math.random() * 1.2 + 's';
+    el.style.transform = 'rotate(' + (Math.random() * 360) + 'deg)';
+    el.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 4000);
+  }
+}
+
+// =============================
+// MUSIC
+// =============================
+function toggleMusic() {
+  if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  if (audioContext.state === 'suspended') audioContext.resume();
+  musicPlaying = !musicPlaying;
+  const bar = document.getElementById('musicBarWrap');
+  if (bar) bar.classList.toggle('paused', !musicPlaying);
+  const homeBtn = document.getElementById('homeMusicBtn');
+  if (homeBtn) homeBtn.classList.toggle('playing', musicPlaying);
+  if (musicPlaying) playMusicTrack(); else stopMusic();
+}
+
+function stopMusic() {
+  musicNodes.forEach(n => { try { n.stop(); } catch(e){} });
+  musicNodes = []; clearTimeout(musicScheduler);
+}
+
+function playMusicTrack() {
+  if (!musicPlaying) return;
+  stopMusic();
+  const track = MUSIC_TRACKS[currentTrack % MUSIC_TRACKS.length];
+  const label = document.getElementById('musicLabel');
+  if (label) label.textContent = track.name;
+  const notes = track.notes;
+  let time = audioContext.currentTime + 0.1;
+  const dur = 0.35;
+  notes.forEach((freq, i) => {
+    const osc = audioContext.createOscillator();
+    const gain = audioContext.createGain();
+    osc.connect(gain); gain.connect(audioContext.destination);
+    osc.type = 'triangle'; osc.frequency.setValueAtTime(freq, time + i * dur);
+    gain.gain.setValueAtTime(0, time + i * dur);
+    gain.gain.linearRampToValueAtTime(0.12, time + i * dur + 0.05);
+    gain.gain.linearRampToValueAtTime(0, time + i * dur + dur - 0.05);
+    osc.start(time + i * dur); osc.stop(time + i * dur + dur);
+    musicNodes.push(osc);
+  });
+  const totalDur = (notes.length * dur + 0.5) * 1000;
+  musicScheduler = setTimeout(() => {
+    currentTrack = (currentTrack + 1) % MUSIC_TRACKS.length;
+    if (musicPlaying) playMusicTrack();
+  }, totalDur);
+}
+
+function playVictorySound() {
+  if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  if (audioContext.state === 'suspended') audioContext.resume();
+  [523,659,784,1047,784,1047].forEach((freq, i) => {
+    const osc = audioContext.createOscillator();
+    const gain = audioContext.createGain();
+    osc.connect(gain); gain.connect(audioContext.destination);
+    osc.type = 'sine'; osc.frequency.value = freq;
+    const t = audioContext.currentTime;
+    gain.gain.setValueAtTime(0, t + i * 0.15);
+    gain.gain.linearRampToValueAtTime(0.18, t + i * 0.15 + 0.05);
+    gain.gain.linearRampToValueAtTime(0, t + i * 0.15 + 0.2);
+    osc.start(t + i * 0.15); osc.stop(t + i * 0.15 + 0.25);
+  });
+}
+
+// =============================
+// INIT
+// =============================
+// Expose global functions
+window.showPage = showPage;
+window.switchAuthTab = switchAuthTab;
+window.doLogin = doLogin;
+window.doRegister = doRegister;
+window.doLogout = doLogout;
+window.changePassword = changePassword;
+window.switchMainTab = switchMainTab;
+window.sidebarCat = sidebarCat;
+window.openDetail = openDetail;
+window.closeDetail = closeDetail;
+window.selectDiff = selectDiff;
+window.startQuiz = startQuiz;
+window.selectAnswer = selectAnswer;
+window.nextQuestion = nextQuestion;
+window.restartQuiz = restartQuiz;
+window.filterBoard = filterBoard;
+window.toggleMusic = toggleMusic;
+
+// Init learn grid when main tab becomes active
+const origSwitchMainTab = window.switchMainTab;
+window.switchMainTab = function(tab) {
+  origSwitchMainTab(tab);
+  if (tab === 'learn') initLearnGrid();
+};
+</script>
+</body>
+</html>
